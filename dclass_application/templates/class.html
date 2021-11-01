@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<div class="wrapper">
+    <div class="class_show">
+        <h1>{{ cl.class_name}}</h1>
+        <li>教師名:{{ cl.teacher }}先生</li>
+        <li>年度:{{ cl.year }}年</li>
+        <li>学期:{{ cl.term }}</li>
+        <li>場所:{{ cl.place}}</li>
+        <li>時間:{{ cl.time }}時限目</li>
+
+    </div>
+    <div class="a_transition">
+        <h1>A率の推移</h1>
+        <div class="a_chart">
+            <canvas id="chart"></canvas>
+        </div>
+    </div>
+    <div class="comment">
+        <h1>コメント</h1>
+    </div>
+    <div class="share">
+        <h1>シェア</h1>
+        <input type="submit" value="twitter", class="twitter btn">
+        <input type="submit" value="LINE", class="line btn">    
+    </div>
+
+    <div class="related_recommend">
+        <h1>この授業に似たおすすめ授業</h1>
+    </div>
+</div>
+
+
+<script>
+var ctx = document.getElementById("chart");
+var myLineChart = new Chart(ctx, {
+// グラフの種類：折れ線グラフを指定
+type: 'line',
+data: {
+    // x軸の各メモリ
+    labels: ['2019', '2020', '2021'],
+    datasets: [
+    {
+        label: 'A率',
+        data: [72, 77, 56],
+        borderColor: "#ec4343",
+        backgroundColor: "#00000000"
+    },
+    ],
+},
+options: {
+    title: {
+    display: true,
+    text: 'A率の遷移（過去３年）'
+    },
+    scales: {
+    yAxes: [{
+        ticks: {
+        suggestedMax: 100,
+        suggestedMin: 0,
+        stepSize: 20,  // 縦メモリのステップ数
+        callback: function(value, index, values){
+            return  value +  '%'  // 各メモリのステップごとの表記（valueは各ステップの値）
+        }
+        }
+    }]
+    },
+}
+});
+  
+</script>
+
+
+{% endblock main %}

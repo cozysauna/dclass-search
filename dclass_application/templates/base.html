@@ -1,0 +1,28 @@
+
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+    <title>dclass</title>
+</head>
+<body>
+
+{% include "_header.html" %}
+
+<div class="main">
+    {% block main %}
+    {% endblock main %}
+</div>
+
+
+
+    
+</body>
+</html>

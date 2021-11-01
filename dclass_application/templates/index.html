@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block main %}
+    <div class="wrapper">
+        <h1>検索条件</h1>
+        <form action="{% url 'result' %}", method = "post">
+            {% csrf_token %}
+            <div class="radio_wrap">
+                {% for radio in form.term %}
+                    {{ radio.tag }}
+                    <label for="id_term_{{ forloop.counter0 }}">{{ radio.choice_label }}</label>
+                {% endfor %}
+            </div>
+            <div class="radio_wrap">
+                {% for radio in form.day %}
+                    {{ radio.tag }}
+                    <label for="id_day_{{ forloop.counter0 }}">{{ radio.choice_label }}</label>
+                {% endfor %}
+            </div>
+            <div class="radio_wrap">
+                {% for radio in form.time %}
+                    {{ radio.tag }}
+                    <label for="id_time_{{ forloop.counter0 }}">{{ radio.choice_label }}</label>
+                {% endfor %}
+            </div>
+            <div class="radio_wrap">
+                {% for radio in form.place %}
+                    {{ radio.tag }}
+                    <label for="id_place_{{ forloop.counter0 }}">{{ radio.choice_label }}</label>
+                {% endfor %}
+            </div>
+            <div class="radio_wrap">
+                {% for radio in form.class_form %}
+                    {{ radio.tag }}
+                    <label for="id_class_form_{{ forloop.counter0 }}">{{ radio.choice_label }}</label>
+                {% endfor %}
+            </div>
+            <div class="radio_wrap">
+                {% for radio in form.year %}
+                    {{ radio.tag }}
+                    <label for="id_year_{{ forloop.counter0 }}">{{ radio.choice_label }}</label>
+                {% endfor %}
+            </div>
+            <input type="submit" value="検索", class="btn search_btn">
+        </form>
+    </div>
+
+    <div class="wrapper">
+        <h1>おすすめ授業</h1>
+        {% for cl in recommend_data %}
+            <a href="{% url 'class' cl.id %}">
+                <div class="class_result">
+                    <li>{{ cl.class_name }}</li>
+                    <li>{{ cl.team }}</li>
+                    <li>教師名:{{ cl.teacher }}</li>
+                    <li>{{ cl.year }}年度</li>
+                    <li>{{ cl.place}}</li>
+                    <li>{{ cl.time }}時限目</li>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+
+    <div class="wrapper">
+        <h1>コメント</h1>
+    </div>
+
+{% endblock main %}
+

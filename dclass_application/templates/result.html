@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block main %}
+    <div class="wrapper">
+        <h1>検索条件</h1>
+        <li>曜日: {{day}}</li>
+        <li>学期: {{term}}</li>
+        <li>授業形態: {{class_form}}</li>
+        <li>場所: {{place}}</li>
+    </div>
+    <div class="title">
+        <h1>検索結果一覧</h1>
+        <p>
+            <form action="{% url 'result' %}", method = "post">
+                {% csrf_token %}
+                {{sort_form}}
+                <input type="submit" value="検索", class="btn search_btn">
+            </form>
+        </p>
+        <p>検索結果<span>{{query_cnt}}</span>件</p>
+    </div>
+    <div class="wrapper">
+        {% for q in querys%}
+        <a href="{% url 'class' q.id %}">
+            <div class="class_result">
+                <li>{{ q.class_name }}</li>
+                {% comment %} <li><a href="{% url 'like' q.id %}"><span>{{ q.favorite }}</span>いいね！</a></li> {% endcomment %}
+                <li>{{ q.team }}</li>
+                <li>教師名:{{ q.teacher }}</li>
+                <li>{{ q.year }}年度</li>
+                <li>{{ q.place}}</li>
+                <li>{{ q.time }}時限目</li>
+            </div>
+        </a>
+
+        {% empty %}
+        <p>該当するデータがありません</p>
+        {% endfor %}
+    </div>
+{% endblock main %}
