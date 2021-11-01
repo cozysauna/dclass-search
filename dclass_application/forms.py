@@ -3,10 +3,8 @@ from django import forms
 from django.core.exceptions import ValidationError
 
 from django.contrib.auth import get_user_model, authenticate
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 
-
-User = get_user_model()
 
 class ClassSeachForm(forms.Form):
     term = forms.ChoiceField(

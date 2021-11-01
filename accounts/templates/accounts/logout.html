@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block main %}
+    <div class="wrapper">
+        <h1>ログアウト</h1>
+        <form method='post'>
+        {% csrf_token %}
+        <button type='submit'>ログアウト</button>
+        </form>
+    </div>
+{% endblock main %}
+
+
+
+

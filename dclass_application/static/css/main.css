@@ -24,7 +24,20 @@ header {
     color: white;
     height: 40px;
     line-height: 40px;
-    padding: 8px 16px;
+    padding: 8px 16px; 
+}
+
+header ul {
+    display: flex;
+}
+
+header ul li:first-child {
+    width: 85%;
+}
+
+header ul li:not(:first-child){
+    width: calc(15/2%);
+    margin: 0 auto;
 }
 
 header a {

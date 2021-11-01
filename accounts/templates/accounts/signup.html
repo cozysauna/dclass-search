@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+
+{% block main %}
+    <div class="wrapper">
+        <h1>サインアップ</h1>
+        <form method="post">
+            {% csrf_token %}
+            <ul>
+                <li>{{ form.password1 }}</li>
+                <li>{{ form.password2 }}</li>
+                <li>{{ form.email}} </li>
+            </ul>
+            <button type = "submit">サインアップ</button>
+        </form>
+    </div>
+{% endblock main %}

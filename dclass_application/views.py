@@ -17,12 +17,10 @@ class IndexView(TemplateView):
         params = {
             'form': ClassSeachForm,
             'recommend_data': self.model.objects.all().order_by('a_ratio').reverse(),
-            'login_user': request.user,
         }
         return render(request, 'index.html', params)
 
 class ResultView(ListView):
-    # template_name = 'result.html'
     model = Classes
     def post(self, request):
         if 'day' in request.POST:
@@ -92,32 +90,39 @@ def ClassView(request, pk):
 
 
  
-def SigninView(request):
-    if request.method == 'GET':
-        form = SigninForm()
-    else:
-        form = SigninForm(request.POST)
-        if form.is_valid():
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
-            username = form.cleaned_data['username']
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                return redirect('index')
-            else:
-                pass
-    params = {
-        'form': form
-    }
-    return render(request, 'signin.html', params)
+# def SigninView(request):
+#     if request.method == 'GET':
+#         form = SigninForm()
+#     else:
+#         form = SigninForm(request.POST)
+#         if form.is_valid():
+#             email = form.cleaned_data['email']
+#             password = form.cleaned_data['password']
+#             username = form.cleaned_data['username']
+#             user = authenticate(username=username, password=password)
+#             if user is not None:
+#                 login(request, user)
+#                 return redirect('index')
+#             else:
+#                 pass
+#     params = {
+#         'form': form
+#     }
+#     return render(request, 'signin.html', params)
 
-def SignoutView(request):
-    logout(request)
-    return redirect('index')
+# def SignoutView(request):
+#     logout(request)
+#     return redirect('index')
 
-def SignupView(request):
-    params = {
-        'form': SignupForm()
-    }
-    return render(request, 'signup.html', params)
+# def SignupView(request):
+#     params = {
+#         'form': SignupForm()
+#     }
+#     return render(request, 'signup.html', params)
+
+# def ProfileView(request, pk):
+#     model = User
+#     params = {
+#         'user': model.objects.get(pk=pk)            
+#     }
+#     return render(request, 'profile.html', params)
