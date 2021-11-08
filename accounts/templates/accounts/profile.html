@@ -3,8 +3,8 @@
 {% block main %}
     <div class="wrapper">
         <h1>プロフィール</h1>
-        <h2>メールアドレス:{{user.email}}</h2>
-        <h2>お気に入り授業</h2>
+        <h3>メールアドレス:{{user.email}}</h3>
+        <h3>■ お気に入り授業</h3>
         <ul>
             {% for cl in user.favorite_class.all %}
                 <a href="{% url 'class' cl.id %}">
@@ -30,11 +30,24 @@
             {% empty %}
                 <p>お気に入りの授業がありません</p>
             {% endfor %}
-        <h2>投稿したコメント</h2>
+        <h3>■ 投稿したコメント</h3>
             {% for comment in mycomments%}
-                <p>評価:☆{{ comment.star }}</p> 
-                <p>コメント日:{{comment.created_at}}</p>
-                <p>コメント: {{comment.text}}</p>
+                <a href="{% url 'class' comment.cl.id %}">
+                    <div class="recent_comment">
+                        <div class="recent_comment_left">
+                            <h2>{{comment.cl.class_name}}</h2>
+                            <h5>{{ comment.cl.teacher }}先生</h5>
+
+                        </div>
+                        <div class="recent_comment_middle">
+                            <p>{{comment.text}}</p>
+                        </div>
+                        <div class="recent_comment_right">
+                            {% comment %} <p>評価:<span class='star'>{{comment.get_star}}</span></p> {% endcomment %}
+                            <span class="star">{{comment.get_star}}</span><span class="my-gray">{{comment.get_left_star}}</span>
+                        </div>
+                    </div>
+                </a>
             {% empty %}
             <p>コメントはありません</p>
             {% endfor %}

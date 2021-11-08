@@ -68,7 +68,7 @@
                     </div>
                     <div class="class_result_right">
                         <ul>
-                            <li><i class="fas fa-heart"></i>いいね{{ cl.favorite }}</li>
+                            <li><i class="fas fa-heart fa-fw"></i>{{ cl.favorite }}</li>
                         </ul>
                     </div>
                 </div>
@@ -79,9 +79,22 @@
     <div class="wrapper">
         <h1>最近のコメント</h1>
         {% for comment in recent_comments %}
-            <p>評価:☆{{ comment.star }}</p> 
-            <p>コメント日:{{comment.created_at}}</p>
-            <p>コメント: {{comment.text}}</p>
+            <a href="{% url 'class' comment.cl.id %}">
+                <div class="recent_comment">
+                    <div class="recent_comment_left">
+                        <h2>{{comment.cl.class_name}}</h2>
+                        <h5>{{ comment.cl.teacher }}先生</h5>
+
+                    </div>
+                    <div class="recent_comment_middle">
+                        <p>{{comment.text}}</p>
+                    </div>
+                    <div class="recent_comment_right">
+                        {% comment %} <p>評価:<span class='star'>{{comment.get_star}}</span></p> {% endcomment %}
+                        <span class="star">{{comment.get_star}}</span><span class="my-gray">{{comment.get_left_star}}</span>
+                    </div>
+                </div>
+            </a>
         {% empty %}
             <p>コメントがありません</p>
         {% endfor %}

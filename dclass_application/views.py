@@ -20,7 +20,7 @@ class IndexView(TemplateView):
         params = {
             'form': ClassSeachForm,
             'recommend_data': self.class_model.objects.all().order_by('a_ratio').reverse()[:self.RECOMMEND_CNT],
-            'recent_comments': self.comment_model.objects.all().order_by('created_at')[:self.RECOMMEND_CNT],
+            'recent_comments': self.comment_model.objects.all().order_by('created_at').reverse()[:self.RECOMMEND_CNT],
         }
         return render(request, 'index.html', params)
 
@@ -144,3 +144,21 @@ def AddCommentView(request, uspk, clpk):
             params['checked_favorite'] = request.user.favorite_class.filter(pk=clpk).exists()
         return render(request, 'class.html', params)
 
+
+def GoodView(request, clpk):
+    cl = Classes.objects.get(pk=clpk)
+    cl.favorite += 1
+    cl.save()
+
+    RELATED_CLASS_CNT = 5
+    cl = Classes.objects.get(pk=clpk)
+    related_classs = Classes.objects.filter(place=cl.place)
+    comments = Comment.objects.filter(cl=cl)
+    params = {
+        'cl': cl,
+        'related_classes': related_classs[:RELATED_CLASS_CNT],
+        'comments': comments,
+    }
+    if request.user.is_authenticated:
+        params['checked_favorite'] = request.user.favorite_class.filter(pk=clpk).exists()
+    return render(request, 'class.html', params)

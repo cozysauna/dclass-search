@@ -2,68 +2,91 @@
 
 {% block main %}
 <div class="wrapper">
-    <div class="class_show">
+    <div class="class_title">
         <h1>{{ cl.class_name}}</h1>
-        <li>教師名:{{ cl.teacher }}先生</li>
-        <li>年度:{{ cl.year }}年</li>
-        <li>学期:{{ cl.term }}</li>
-        <li>場所:{{ cl.place}}</li>
-        <li>時間:{{ cl.time }}時限目</li>
-
-    </div>
-    <div class="a_transition">
-        <h1>A率の推移</h1>
-        <div class="a_chart">
-            {% if user.is_authenticated %}
-                <canvas id="chart"></canvas>
-            {% else %}
-                <p>ログインするとA率を確認できます</p>
-            {% endif %}
+        <p>{{ cl.teacher }}先生</p>
+        <div class="share">
+            <div class="share_left">
+                <a href="" class="share_btn"><i class="fab fa-twitter fa-fw twitter"></i>ツイートする</a>
+                <a href="" class="share_btn"><i class="fab fa-line fa-fw line"></i>シェアする</a>
+            </div>
+            <div class="share_right">
+                {% if user.is_authenticated %}  
+                    {% if checked_favorite %}
+                    <a href={% url 'remove_favorite' user.id cl.id %} class="favorite">お気に入り済み</a> 
+                    {% else %}
+                    <a href={% url 'favorite' user.id cl.id %} class="favorite">お気に入り</a>
+                    {% endif %}
+                {% else %}
+                    <a href={% url 'account_login' %} class="a_border">ログインすることでお気に入り登録が可能です</a>
+                {% endif %} 
+                <a href={% url 'good' cl.id %} class="good"><i class="fas fa-check fa-fw"></i>いいね{{cl.favorite}}</a>
+            </div>
         </div>
     </div>
-    <div class="comment">
-        <h1>コメント</h1>
+    <h3>基本情報</h3>
+    <div class="class_show">
+        <div class="class_show_left">
+            <table class="basic_info">
+                <tr>
+                    <th>年度</th>
+                    <td>{{ cl.year }}年</td>
+                </tr>
+                <tr>
+                    <th>学期</th>
+                    <td>{{ cl.term }}</td>
+                </tr>
+                <tr>
+                    <th>場所</th>
+                    <td>{{ cl.place}}</td>
+                </tr>
+                <tr>
+                    <th>時間</th>
+                    <td>{{ cl.time }}時限目</td>
+                </tr>
+            {% comment %} <li><span class="bold">年度</span>:{{ cl.year }}年</li>
+            <li><span class="bold">学期</span>:{{ cl.term }}</li>
+            <li><span class="bold">場所</span>:{{ cl.place}}</li>
+            <li><span class="bold">時間</span>:{{ cl.time }}時限目</li> {% endcomment %}
+            </table>
+        </div>
+        <div class="class_show_right">
+            <div class="a_transition">
+                <div class="a_chart">
+                    {% if user.is_authenticated %}
+                        <canvas id="chart"></canvas>
+                    {% else %}
+                        <p>ログインするとA率を確認できます</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="profile_comment">
+        <h3>■ コメント</h3>
         {% for comment in comments %}
-            <p>評価:☆{{ comment.star }}</p> 
-            <p>コメント: {{comment.text}}</p>
+            <div class="recent_comment">
+                <div class="recent_comment_left">
+                    <p>{{comment.text}}</p>
+                </div>
+                <div class="recent_comment_middle">
+                </div>
+                <div class="recent_comment_right">
+                    <span class="star">{{comment.get_star}}</span><span class="my-gray">{{comment.get_left_star}}</span>
+                </div>
+            </div>
         {% empty %}
             <p>コメントがありません</p>
         {% endfor %}
         {% if user.is_authenticated %}
-            <a href={% url 'add_comment' user.id cl.id %}>
-                <p>授業を評価する</p>
-            </a>
+            <div class="comment_w">
+                <a href={% url 'add_comment' user.id cl.id %}><i class="fas fa-pencil-alt fa-fw"></i>コメントを書く</a>
+            </div>
         {% endif %}
     </div>
-    <div class="share">
-        <h1>シェア</h1>
-        {% comment %} <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">
-            <input type="submit" value="twitter" class="twitter btn">
-        </a>
-        <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script> {% endcomment %}
-        <input type="submit" value="twitter" class="twitter btn">
-
-        <input type="submit" value="LINE" class="line btn">  
-        {% if user.is_authenticated %}  
-            {% if checked_favorite %}
-            <a href={% url 'remove_favorite' user.id cl.id %}>
-                <input type="submit" value="お気に入り解除" class="favorite_btn btn"> 
-            </a> 
-            {% else %}
-            <a href={% url 'favorite' user.id cl.id %}>
-                <input type="submit" value="お気に入り" class="favorite_btn btn"> 
-            </a>
-            {% endif %}
-
-        {% else %}
-            <p><a href={% url 'account_login' %}>ログイン</a>することでお気に入り登録が可能です</p>
-        {% endif %} 
-    </div>
-    <div class="good">
-        <input type="submit" value="いいね" class="btn">
-    </div>
     <div class="related_recommend">
-        <h1>関連おすすめ授業</h1>
+        <h3>■ 関連おすすめ授業</h3>
         {% for cl in related_classes %}
             <a href="{% url 'class' cl.id %}">
                 <div class="class_result">
@@ -80,7 +103,7 @@
                     </div>
                     <div class="class_result_right">
                         <ul>
-                            <li>いいね{{ cl.favorite }}</li>
+                            <li><i class="fas fa-heart fa-fw"></i>{{ cl.favorite }}</li>
                         </ul>
                     </div>
                 </div>

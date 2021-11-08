@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import IndexView, ResultView, ClassView, FavoriteView, RemoveFavoriteView, AddCommentView
+from .views import IndexView, ResultView, ClassView, FavoriteView, RemoveFavoriteView, AddCommentView, GoodView
 urlpatterns = [
     path('', IndexView.as_view(), name = 'index'),
     path('result', ResultView.as_view(), name = 'result'),
@@ -7,4 +7,5 @@ urlpatterns = [
     path('favorite/<int:uspk>/<int:clpk>', FavoriteView, name = 'favorite'),
     path('removefavorite/<int:uspk>/<int:clpk>', RemoveFavoriteView, name = 'remove_favorite'),
     path('add_comment/<int:uspk>/<int:clpk>', AddCommentView, name='add_comment'),
+    path('good/<int:clpk>', GoodView, name='good')
 ]

@@ -63,5 +63,12 @@ class Comment(models.Model):
     user = models.ForeignKey('accounts.CustomUser', on_delete=models.DO_NOTHING)
     star = models.IntegerField(default=0)
     created_at = models.DateTimeField(default=timezone.now)
+
+    def get_star(self):
+        return '★' * self.star
+
+    def get_left_star(self):
+        return '★' * (5 - self.star)
+
     def __str__(self):
         return str(self.user.id) +':'+ str(self.cl.id) +':'+ self.text
