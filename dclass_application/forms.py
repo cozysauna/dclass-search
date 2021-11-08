@@ -27,7 +27,6 @@ class ClassSeachForm(forms.Form):
                                 ('木', '木'),
                                 ('金', '金'),
                                 ('土', '土'),
-                                ('日', '日'),
                             ),
                             initial='0',
                             widget=forms.RadioSelect(
@@ -96,68 +95,15 @@ class SortForm(forms.Form):
         initial = '0',
     )
 
-class SigninForm(forms.Form):
-    email = forms.EmailField(
-        required=True,
-        max_length=255,
-        min_length=3,
-        widget=forms.EmailInput(
-            attrs={
-                'placeholder': 'your-email@example.com',
-            }
-        )
-    )
-    password = forms.CharField(
-        required=True,
-        max_length=255,
-        min_length=6,
-        widget=forms.PasswordInput(
-            attrs={
-                'placeholder': '********',
-            }
-        )
-    )
-    def clean(self):
-        cleaned_data = super(SigninForm, self).clean()
-        if 'email' in cleaned_data and 'password' in cleaned_data:
-            try:
-                user = User.objects.get(email=cleaned_data['email'])
-            except:
-                raise ValidationError('メールアドレスかパスワードが間違っています。')
-            auth_result = authenticate(
-                username=str(user),
-                password=cleaned_data['password']
-            )
-            if not auth_result:
-                raise ValidationError('メールアドレスかパスワードが間違っています。')
-            cleaned_data['username'] = str(user)
-            return cleaned_data
-    def clean_email(self):
-        return self.cleaned_data['email']
-    def clean_password(self):
-        return self.cleaned_data['password']
-    def cleaned_username(self):
-        return self.cleaned_data['username']
-
-
-class SignupForm(forms.Form):
-    email = forms.EmailField(
-        required=True,
-        max_length=255,
-        min_length=3,
-        widget=forms.EmailInput(
-            attrs={
-                'placeholder': 'your-email@example.com',
-            }
-        )
-    )
-    password = forms.CharField(
-        required=True,
-        max_length=255,
-        min_length=6,
-        widget=forms.PasswordInput(
-            attrs={
-                'placeholder': '********',
-            }
-        )
-    )
+class CommentForm(forms.Form):
+    text = forms.CharField(label='コメント', widget=forms.Textarea)
+    star = forms.ChoiceField(label='星',
+                        choices=(
+                            ('1', '1'),
+                            ('2', '2'),
+                            ('3', '3'),
+                            ('4', '4'),
+                            ('5', '5'),
+                        ),
+                        initial='1',
+                        )

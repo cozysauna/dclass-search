@@ -1,13 +1,10 @@
 from django.urls import path
-from .views import IndexView, ResultView, LikeView, ClassView
-# from .views import IndexView, ResultView, LikeView, ClassView, SigninView, SignoutView, SignupView, ProfileView
+from .views import IndexView, ResultView, ClassView, FavoriteView, RemoveFavoriteView, AddCommentView
 urlpatterns = [
     path('', IndexView.as_view(), name = 'index'),
     path('result', ResultView.as_view(), name = 'result'),
-    path('result/<int:pk>/like', LikeView, name = 'like'),
     path('class/<int:pk>', ClassView, name = 'class'),
-    # path('signin', SigninView, name='signin'),
-    # path('signout', SignoutView, name='signout'),
-    # path('signup', SignupView, name='signup'),
-    # path('profile/<int:pk>', ProfileView, name = 'profile')
+    path('favorite/<int:uspk>/<int:clpk>', FavoriteView, name = 'favorite'),
+    path('removefavorite/<int:uspk>/<int:clpk>', RemoveFavoriteView, name = 'remove_favorite'),
+    path('add_comment/<int:uspk>/<int:clpk>', AddCommentView, name='add_comment'),
 ]

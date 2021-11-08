@@ -2,8 +2,8 @@
 
 {% block main %}
     <div class="wrapper">
-        <h1>検索条件</h1>
-        <form action="{% url 'result' %}", method = "post">
+        <h1 class="title">検索条件</h1>
+        <form action="{% url 'result' %}", method = "post" class="search_form">
             {% csrf_token %}
             <div class="radio_wrap">
                 {% for radio in form.term %}
@@ -41,8 +41,13 @@
                     <label for="id_year_{{ forloop.counter0 }}">{{ radio.choice_label }}</label>
                 {% endfor %}
             </div>
-            <input type="submit" value="検索", class="btn search_btn">
+            <div class="center">
+                <input type="submit" value="検索", class="btn search_btn">
+            </div>
         </form>
+        <div class="center reset_condition">
+            <a href={% url 'index' %}>検索条件のクリア</a>
+        </div>
     </div>
 
     <div class="wrapper">
@@ -50,19 +55,37 @@
         {% for cl in recommend_data %}
             <a href="{% url 'class' cl.id %}">
                 <div class="class_result">
-                    <li>{{ cl.class_name }}</li>
-                    <li>{{ cl.team }}</li>
-                    <li>教師名:{{ cl.teacher }}</li>
-                    <li>{{ cl.year }}年度</li>
-                    <li>{{ cl.place}}</li>
-                    <li>{{ cl.time }}時限目</li>
+                    <div class="class_result_left">
+                        <h2>{{ cl.class_name }}</h2>
+                        <h5>{{ cl.teacher }}先生</h5>
+                    </div>
+                    <div class="class_result_middle">
+                        <ul>
+                            <li>{{ cl.year }}年度</li>
+                            <li>{{ cl.term }}</li>
+                            <li>{{ cl.place}}</li>
+                        </ul>
+                    </div>
+                    <div class="class_result_right">
+                        <ul>
+                            <li><i class="fas fa-heart"></i>いいね{{ cl.favorite }}</li>
+                        </ul>
+                    </div>
                 </div>
             </a>
         {% endfor %}
     </div>
 
     <div class="wrapper">
-        <h1>コメント</h1>
+        <h1>最近のコメント</h1>
+        {% for comment in recent_comments %}
+            <p>評価:☆{{ comment.star }}</p> 
+            <p>コメント日:{{comment.created_at}}</p>
+            <p>コメント: {{comment.text}}</p>
+        {% empty %}
+            <p>コメントがありません</p>
+        {% endfor %}
+
     </div>
 
 {% endblock main %}

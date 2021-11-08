@@ -20,19 +20,27 @@
         <p>検索結果<span>{{query_cnt}}</span>件</p>
     </div>
     <div class="wrapper">
-        {% for q in querys%}
-        <a href="{% url 'class' q.id %}">
-            <div class="class_result">
-                <li>{{ q.class_name }}</li>
-                {% comment %} <li><a href="{% url 'like' q.id %}"><span>{{ q.favorite }}</span>いいね！</a></li> {% endcomment %}
-                <li>{{ q.team }}</li>
-                <li>教師名:{{ q.teacher }}</li>
-                <li>{{ q.year }}年度</li>
-                <li>{{ q.place}}</li>
-                <li>{{ q.time }}時限目</li>
-            </div>
-        </a>
-
+        {% for cl in querys %}
+            <a href="{% url 'class' cl.id %}">
+                <div class="class_result">
+                    <div class="class_result_left">
+                        <h2>{{ cl.class_name }}</h2>
+                        <p>{{ cl.teacher }}先生</p>
+                    </div>
+                    <div class="class_result_middle">
+                        <ul>
+                            <li>{{ cl.year }}年度</li>
+                            <li>{{ cl.term }}</li>
+                            <li>{{ cl.place}}</li>
+                        </ul>
+                    </div>
+                    <div class="class_result_right">
+                        <ul>
+                            <li>{{ cl.favorite }}</li>
+                        </ul>
+                    </div>
+                </div>
+            </a>
         {% empty %}
         <p>該当するデータがありません</p>
         {% endfor %}

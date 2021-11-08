@@ -1,22 +1,26 @@
 from typing import Sequence
 from django.http.response import Http404
 from django.views.generic import TemplateView, ListView, FormView
+from django.views import View
 from django.core.paginator import Paginator
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy, reverse
-from .forms import ClassSeachForm, SortForm, SigninForm, SignupForm
-from .models import Classes
-from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login, logout
+from .forms import ClassSeachForm, CommentForm, SortForm 
+from .models import Classes, Comment
+from accounts.models import CustomUser
 from django.http.response import HttpResponseRedirect
 
 
 class IndexView(TemplateView):
-    model = Classes
+    class_model = Classes
+    comment_model = Comment
+    RECOMMEND_CNT = 5
+    RECENT_COMMENT = 5
     def get(self, request):
         params = {
             'form': ClassSeachForm,
-            'recommend_data': self.model.objects.all().order_by('a_ratio').reverse(),
+            'recommend_data': self.class_model.objects.all().order_by('a_ratio').reverse()[:self.RECOMMEND_CNT],
+            'recent_comments': self.comment_model.objects.all().order_by('created_at')[:self.RECOMMEND_CNT],
         }
         return render(request, 'index.html', params)
 
@@ -36,7 +40,6 @@ class ResultView(ListView):
         return render(request, 'result.html', params)
 
     def get_queryset(self, search_params):
-
         if 'sort' in search_params:
             if search_params['sort'] == '1':
                 query = self.model.objects.all().order_by('favorite').reverse()
@@ -75,54 +78,69 @@ class ResultView(ListView):
         conds = ['day', 'term', 'class_form', 'place']
         return conds
 
-def LikeView(request, pk):
-        try:
-            cl = Classes.objects.get(pk=pk)
-        except:
-            return Http404
-        cl.favorite += 1
-        cl.save()
-        return redirect('index')
-
 def ClassView(request, pk):
+    RELATED_CLASS_CNT = 5
     cl = Classes.objects.get(pk=pk)
-    return render(request, 'class.html', {'cl': cl})
+    related_classs = Classes.objects.filter(place=cl.place)
+    comments = Comment.objects.filter(cl=cl)
+    params = {
+        'cl': cl,
+        'related_classes': related_classs[:RELATED_CLASS_CNT],
+        'comments': comments,
+    }
+    if request.user.is_authenticated:
+        params['checked_favorite'] = request.user.favorite_class.filter(pk=pk).exists()
+    return render(request, 'class.html', params)
+
+def FavoriteView(request, uspk, clpk):
+    cl = Classes.objects.get(pk=clpk)
+    user = CustomUser.objects.get(pk=uspk)
+    user.favorite_class.add(cl)
+    user.save()
+    params = {
+        'cl': cl,
+    }
+    params['checked_favorite'] = True
+    return render(request, 'class.html', params)
 
 
- 
-# def SigninView(request):
-#     if request.method == 'GET':
-#         form = SigninForm()
-#     else:
-#         form = SigninForm(request.POST)
-#         if form.is_valid():
-#             email = form.cleaned_data['email']
-#             password = form.cleaned_data['password']
-#             username = form.cleaned_data['username']
-#             user = authenticate(username=username, password=password)
-#             if user is not None:
-#                 login(request, user)
-#                 return redirect('index')
-#             else:
-#                 pass
-#     params = {
-#         'form': form
-#     }
-#     return render(request, 'signin.html', params)
+def RemoveFavoriteView(request, uspk, clpk):
+    cl = Classes.objects.get(pk=clpk)
+    user = CustomUser.objects.get(pk=uspk)
+    user.favorite_class.remove(cl)
+    user.save()
+    params = {
+        'cl': cl,
+    }
+    params['checked_favorite'] = False
+    return render(request, 'class.html', params)
 
-# def SignoutView(request):
-#     logout(request)
-#     return redirect('index')
 
-# def SignupView(request):
-#     params = {
-#         'form': SignupForm()
-#     }
-#     return render(request, 'signup.html', params)
+def AddCommentView(request, uspk, clpk):
+    if request.method == 'GET':
+        params = {
+            'cl': Classes.objects.get(pk=clpk),
+            'form': CommentForm,
+        }
+        return render(request, 'add_comment.html', params)
+    else:
+        text = request.POST['text']
+        star = request.POST['star']
+        
+        cl = Classes.objects.get(pk=clpk)
+        user = CustomUser.objects.get(pk=uspk)
 
-# def ProfileView(request, pk):
-#     model = User
-#     params = {
-#         'user': model.objects.get(pk=pk)            
-#     }
-#     return render(request, 'profile.html', params)
+        comment = Comment(text=text, star=star, cl = cl, user=user)
+        comment.save()
+
+
+        RELATED_CLASS_CNT = 5
+        related_classs = Classes.objects.filter(place=cl.place)
+        params = {
+            'cl': cl,
+            'related_classes': related_classs[:RELATED_CLASS_CNT],
+        }
+        if request.user.is_authenticated:
+            params['checked_favorite'] = request.user.favorite_class.filter(pk=clpk).exists()
+        return render(request, 'class.html', params)
+

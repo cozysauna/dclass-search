@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models.base import Model
-
+from django.utils import timezone
+# from accounts.models import CustomUser
 
 class Classes(models.Model):
     """
@@ -54,4 +55,13 @@ class Classes(models.Model):
     participation_ratio = models.IntegerField(default=0)
 
     def __str__(self):
-        return str(self.year)+':'+str(self.code)
+        return self.class_name +':'+ str(self.year)+':'+str(self.code)
+
+class Comment(models.Model):
+    text = models.TextField()
+    cl = models.ForeignKey(Classes, on_delete=models.CASCADE)
+    user = models.ForeignKey('accounts.CustomUser', on_delete=models.DO_NOTHING)
+    star = models.IntegerField(default=0)
+    created_at = models.DateTimeField(default=timezone.now)
+    def __str__(self):
+        return str(self.user.id) +':'+ str(self.cl.id) +':'+ self.text

@@ -1,18 +1,21 @@
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from .models import CustomUser
+from dclass_application.models import Comment
 from allauth.account import views
 from .forms import SignupUserForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 class ProfileView(LoginRequiredMixin ,TemplateView):
-    model = CustomUser
+    user_model = CustomUser
+    comment_model = Comment
     def get(self, request, *args, **kwargs):
-        user = self.model.objects.get(id=request.user.id)
+        user = self.user_model.objects.get(id=request.user.id)
+        mycomment = self.comment_model.objects.filter(user=user)
         params = {
             'user': user,
+            'mycomments': mycomment,
         }
-
         return render(request, 'accounts/profile.html', params)
 
 class LoginView(views.LoginView):

@@ -3,15 +3,22 @@
 
 {% block main %}
     <div class="wrapper">
-        <h1>サインアップ</h1>
+        <div class="log_form">
         <form method="post">
+            <h1>新規登録</h1>
             {% csrf_token %}
             <ul>
-                <li>{{ form.password1 }}</li>
-                <li>{{ form.password2 }}</li>
+                <h4>メールアドレス</h4>
                 <li>{{ form.email}} </li>
+                <h4>パスワード</h4>
+                <li>{{ form.password1 }}</li>
+                <h4>パスワード確認</h4>
+                <li>{{ form.password2 }}</li>
+                <li class="center"><input type = 'submit' class='btn login', value="新規登録"></input></li>
             </ul>
-            <button type = "submit">サインアップ</button>
+            {% comment %} <button type = "submit">新規登録</button> {% endcomment %}
+
         </form>
+        </div>
     </div>
 {% endblock main %}

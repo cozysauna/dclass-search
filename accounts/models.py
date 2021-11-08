@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import UserManager, PermissionsMixin
 from django.utils import timezone
-
+from dclass_application.models import Classes
 
 class UserManager(UserManager):
     def _create_user(self, email, password, **extra_fields):
@@ -31,8 +31,7 @@ class UserManager(UserManager):
     
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField('mail-address', unique=True)
-    first_name = models.CharField(('first name'), max_length=30, blank=True)
-    last_name = models.CharField(('last name'), max_length=150, blank=True)
+    favorite_class = models.ManyToManyField(Classes, blank=True)
     is_staff = models.BooleanField(
         ('staff status'),
         default=False,

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block main %}
+    <div class="wrapper">
+        <h1>{{cl.class_name}}</h1>
+        <form action="{% url 'add_comment' user.id cl.id %}", method = "post">
+            {% csrf_token %}
+            <h1>コメント</h1>
+            {{form.text}}
+            <h2>星</h2>
+            {{form.star}}
+            <div class="center">
+                <input type="submit" value="投稿", class="btn search_btn">
+            </div>
+        </form>
+    </div>
+{% endblock main %}

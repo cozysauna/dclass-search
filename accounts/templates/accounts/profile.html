@@ -3,6 +3,41 @@
 {% block main %}
     <div class="wrapper">
         <h1>プロフィール</h1>
-        <h2>{{user}}</h2>
+        <h2>メールアドレス:{{user.email}}</h2>
+        <h2>お気に入り授業</h2>
+        <ul>
+            {% for cl in user.favorite_class.all %}
+                <a href="{% url 'class' cl.id %}">
+                    <div class="class_result">
+                        <div class="class_result_left">
+                            <h2>{{ cl.class_name }}</h2>
+                            <h5>{{ cl.teacher }}先生</h5>
+                        </div>
+                        <div class="class_result_middle">
+                            <ul>
+                                <li>{{ cl.year }}年度</li>
+                                <li>{{ cl.term }}</li>
+                                <li>{{ cl.place}}</li>
+                            </ul>
+                        </div>
+                        <div class="class_result_right">
+                            <ul>
+                                <li>いいね{{ cl.favorite }}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </a>
+            {% empty %}
+                <p>お気に入りの授業がありません</p>
+            {% endfor %}
+        <h2>投稿したコメント</h2>
+            {% for comment in mycomments%}
+                <p>評価:☆{{ comment.star }}</p> 
+                <p>コメント日:{{comment.created_at}}</p>
+                <p>コメント: {{comment.text}}</p>
+            {% empty %}
+            <p>コメントはありません</p>
+            {% endfor %}
+        </ul>
     </div>
 {% endblock main %}
