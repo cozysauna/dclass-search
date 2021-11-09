@@ -2,7 +2,8 @@
 
 {% block main %}
     <div class="wrapper">
-        <h1 class="title">検索条件</h1>
+        <h1 class="title heading">授業を探す</h1>
+        <p class="how_to_search"><i class="fas fa-search"></i>条件から探す</p>
         <form action="{% url 'result' %}", method = "post" class="search_form">
             {% csrf_token %}
             <div class="radio_wrap">
@@ -57,7 +58,7 @@
                 <div class="class_result">
                     <div class="class_result_left">
                         <h2>{{ cl.class_name }}</h2>
-                        <h5>{{ cl.teacher }}先生</h5>
+                        <p class='teacher_name'>{{ cl.teacher }}先生</p>
                     </div>
                     <div class="class_result_middle">
                         <ul>
@@ -68,7 +69,7 @@
                     </div>
                     <div class="class_result_right">
                         <ul>
-                            <li><i class="fas fa-heart fa-fw"></i>{{ cl.favorite }}</li>
+                            <li><i class="fas fa-heart fa-fw my-pink"></i>{{ cl.favorite }}</li>
                         </ul>
                     </div>
                 </div>
@@ -83,7 +84,7 @@
                 <div class="recent_comment">
                     <div class="recent_comment_left">
                         <h2>{{comment.cl.class_name}}</h2>
-                        <h5>{{ comment.cl.teacher }}先生</h5>
+                        <p>{{ comment.cl.teacher }}先生</p>
 
                     </div>
                     <div class="recent_comment_middle">

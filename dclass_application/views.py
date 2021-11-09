@@ -95,6 +95,8 @@ def ClassView(request, pk):
 def FavoriteView(request, uspk, clpk):
     cl = Classes.objects.get(pk=clpk)
     user = CustomUser.objects.get(pk=uspk)
+    print('--------------------------')
+    print(cl, user)
     user.favorite_class.add(cl)
     user.save()
     params = {

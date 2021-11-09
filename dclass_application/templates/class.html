@@ -18,13 +18,14 @@
                     <a href={% url 'favorite' user.id cl.id %} class="favorite">お気に入り</a>
                     {% endif %}
                 {% else %}
-                    <a href={% url 'account_login' %} class="a_border">ログインすることでお気に入り登録が可能です</a>
-                {% endif %} 
+                    {% comment %} <a href={% url 'account_login' %} class="a_border">ログインすることでお気に入り登録が可能です</a> {% endcomment %}
+                    <a href={% url 'account_login' %} class="favorite">お気に入り</a>
+                {% endif %}
                 <a href={% url 'good' cl.id %} class="good"><i class="fas fa-check fa-fw"></i>いいね{{cl.favorite}}</a>
             </div>
         </div>
     </div>
-    <h3>基本情報</h3>
+    <h3><i class="fas fa-square fa-fw my-blue"></i>基本情報</h3>
     <div class="class_show">
         <div class="class_show_left">
             <table class="basic_info">
@@ -37,6 +38,10 @@
                     <td>{{ cl.term }}</td>
                 </tr>
                 <tr>
+                    <th>学部</th>
+                    <td>{{ cl.faculty}}</td>
+                </tr>
+                <tr>
                     <th>場所</th>
                     <td>{{ cl.place}}</td>
                 </tr>
@@ -44,10 +49,18 @@
                     <th>時間</th>
                     <td>{{ cl.time }}時限目</td>
                 </tr>
-            {% comment %} <li><span class="bold">年度</span>:{{ cl.year }}年</li>
-            <li><span class="bold">学期</span>:{{ cl.term }}</li>
-            <li><span class="bold">場所</span>:{{ cl.place}}</li>
-            <li><span class="bold">時間</span>:{{ cl.time }}時限目</li> {% endcomment %}
+                <tr>
+                    <th>曜日</th>
+                    <td>{{ cl.day }}</td>
+                </tr>
+                <tr>
+                    <th>授業形態</th>
+                    <td>{{cl.class_form}}</td>
+                </tr>
+                <tr>
+                    <th>教科書</th>
+                    <td>{{cl.textbook}}</td>
+                </tr>
             </table>
         </div>
         <div class="class_show_right">
@@ -60,11 +73,48 @@
                     {% endif %}
                 </div>
             </div>
+
+            <div class="evaluation_ratio">
+                <table>
+                    <caption>評価基準</caption>
+                    <tr>
+                        <th>出席点</th>
+                        <th>レポート</th>
+                        <th>テスト</th>
+                    </tr>
+                    <tr>
+                        <td>{{cl.participation_ratio}}%</td>
+                        <td>{{cl.report_ratio}}%</td>
+                        <td>{{cl.test_ratio}}%</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="evaluation_ratio">
+                <table>
+                    <caption>評定平均 {{cl.average_evaluation}}</caption>
+                    <tr>
+                        <th>A</th>
+                        <th>B</th>
+                        <th>C</th>
+                        <th>D</th>
+                        <th>F</th>
+                        <th>O</th>
+                    </tr>
+                    <tr>
+                        <td>{{cl.a_ratio}}</td>
+                        <td>{{cl.b_ratio}}</td>
+                        <td>{{cl.c_ratio}}</td>
+                        <td>{{cl.d_ratio}}</td>
+                        <td>{{cl.f_ratio}}</td>
+                        <td>{{cl.o_ratio}}</td>
+                    </tr>
+                </table>
+            </div>
         </div>
 
     </div>
     <div class="profile_comment">
-        <h3>■ コメント</h3>
+        <h3><i class="fas fa-square fa-fw my-blue"></i>コメント</h3>
         {% for comment in comments %}
             <div class="recent_comment">
                 <div class="recent_comment_left">
@@ -79,14 +129,17 @@
         {% empty %}
             <p>コメントがありません</p>
         {% endfor %}
-        {% if user.is_authenticated %}
-            <div class="comment_w">
+        <div class="comment_w">
+            {% if user.is_authenticated %}
                 <a href={% url 'add_comment' user.id cl.id %}><i class="fas fa-pencil-alt fa-fw"></i>コメントを書く</a>
-            </div>
-        {% endif %}
+            {% else %}
+                <a href={% url 'account_login' %}><i class="fas fa-pencil-alt fa-fw"></i>コメントを書く</a>
+            {% endif %}
+        </div>
+
     </div>
     <div class="related_recommend">
-        <h3>■ 関連おすすめ授業</h3>
+        <h3><i class="fas fa-square fa-fw my-blue"></i>関連おすすめ授業</h3>
         {% for cl in related_classes %}
             <a href="{% url 'class' cl.id %}">
                 <div class="class_result">
