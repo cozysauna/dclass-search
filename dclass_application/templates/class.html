@@ -3,8 +3,8 @@
 {% block main %}
 <div class="wrapper">
     <div class="class_title">
-        <h1>{{ cl.class_name}}</h1>
-        <p>{{ cl.teacher }}先生</p>
+        <h1>{{ cl.class_name}}<span class='teacher_span'>{{cl.teacher}}先生</span></h1>
+        {% comment %} <p>{{ cl.teacher }}先生</p> {% endcomment %}
         <div class="share">
             <div class="share_left">
                 <a href="" class="share_btn"><i class="fab fa-twitter fa-fw twitter"></i>ツイートする</a>
@@ -58,8 +58,15 @@
                     <td>{{cl.class_form}}</td>
                 </tr>
                 <tr>
-                    <th>教科書</th>
-                    <td>{{cl.textbook}}</td>
+                    <th>教科書</th>           
+                    <td>
+                        {% comment %} <div>{{cl.textbook}}</div> {% endcomment %}
+                        <div>本の名前</div>
+                        <div>
+                            ISBN:9784779508301 
+                        </div>
+                        <div><a target= 'blank' class = "amazon" href="https://www.amazon.co.jp/%E3%81%BA%E3%82%93%E3%81%A6%E3%82%8B-%E3%82%B7%E3%83%A3%E3%83%BC%E3%83%97%E3%83%9A%E3%83%B3-%E3%82%B0%E3%83%A9%E3%83%95%E3%82%AE%E3%82%A21000-PG1013-0-3mm/dp/B0013NE3PQ/ref=zg_bs_89413051_1?_encoding=UTF8&refRID=YXMV3GT0TE9JNASPGGNR&th=1">Amazonでチェック</a></div>
+                    </td>
                 </tr>
             </table>
         </div>
@@ -114,22 +121,50 @@
 
     </div>
     <div class="profile_comment">
-        <h3><i class="fas fa-square fa-fw my-blue"></i>コメント</h3>
-        {% for comment in comments %}
-            <div class="recent_comment">
-                <div class="recent_comment_left">
-                    <p>{{comment.text}}</p>
+        {% comment %} <h3><i class="fas fa-square fa-fw my-blue"></i>コメント</h3>
+        <div class="comments">
+            {% for comment in comments %}
+                <div class="recent_comment">
+                    <div class="recent_comment_left">
+                        <p>{{comment.text}}</p>
+                    </div>
+                    <div class="recent_comment_middle">
+                    </div>
+                    <div class="recent_comment_right">
+                        <span class="star">{{comment.get_star}}</span><span class="my-gray">{{comment.get_left_star}}</span>
+                    </div>
                 </div>
-                <div class="recent_comment_middle">
-                </div>
-                <div class="recent_comment_right">
-                    <span class="star">{{comment.get_star}}</span><span class="my-gray">{{comment.get_left_star}}</span>
-                </div>
-            </div>
-        {% empty %}
-            <p>コメントがありません</p>
-        {% endfor %}
+            {% empty %}
+                <div>コメントがありません</div>
+            {% endfor %}
+        </div>
         <div class="comment_w">
+            {% if user.is_authenticated %}
+                <a href={% url 'add_comment' user.id cl.id %}><i class="fas fa-pencil-alt fa-fw"></i>コメントを書く</a>
+            {% else %}
+                <a href={% url 'account_login' %}><i class="fas fa-pencil-alt fa-fw"></i>コメントを書く</a>
+            {% endif %}
+        </div> {% endcomment %}
+
+        <h3><i class="fas fa-square fa-fw my-blue"></i>コメント</h3>
+        <div class="comment_w">
+            {% for comment in comments %}
+                <div class="class_result">
+                    <a href="{% url 'class' comment.cl.id %}">
+                        <div class="comment_result_content">
+                            <h2>{{comment.cl.class_name}}</h2>
+                            <span class="star">{{comment.get_star}}</span><span class="my-gray">{{comment.get_left_star}}</span>
+                            <p>{{ comment.cl.teacher }}先生</p>
+                            <p>{{comment.text}}</p>
+                        </div>
+                    </a>
+                </div>
+            {% empty %}
+                <p>コメントがありません</p>
+            {% endfor %}
+        </div>
+
+        <div class="comment_btn">
             {% if user.is_authenticated %}
                 <a href={% url 'add_comment' user.id cl.id %}><i class="fas fa-pencil-alt fa-fw"></i>コメントを書く</a>
             {% else %}
@@ -140,30 +175,39 @@
     </div>
     <div class="related_recommend">
         <h3><i class="fas fa-square fa-fw my-blue"></i>関連おすすめ授業</h3>
-        {% for cl in related_classes %}
-            <a href="{% url 'class' cl.id %}">
+        <div class="class_w">
+            {% for cl in related_classes %}
                 <div class="class_result">
-                    <div class="class_result_left">
-                        <h2>{{ cl.class_name }}</h2>
-                        <h5>{{ cl.teacher }}先生</h5>
-                    </div>
-                    <div class="class_result_middle">
-                        <ul>
-                            <li>{{ cl.year }}年度</li>
-                            <li>{{ cl.term }}</li>
-                            <li>{{ cl.place}}</li>
-                        </ul>
-                    </div>
-                    <div class="class_result_right">
-                        <ul>
-                            <li><i class="fas fa-heart fa-fw"></i>{{ cl.favorite }}</li>
-                        </ul>
-                    </div>
+                    <a href="{% url 'class' cl.id %}">
+                        <div class="class_result_content">
+                            <h2>
+                                {{ cl.class_name }}
+                                <span class='teacher_name'>{{ cl.teacher }}先生</span>                        
+                            </h2>
+                            <ul class="flex">
+                                <li><i class="fas fa-heart fa-fw my-pink"></i>{{ cl.favorite }}</li>
+                                <li><i class="far fa-comment fa-fw"></i>0</li>
+                                <li>A率{{cl.a_ratio}}</li>
+                                <li>評定平均{{cl.average_evaluation}}</li>
+                            </ul>
+                            <ul>
+                                <li>{{ cl.year }}年</li>
+                                <li>{{ cl.term }}</li>
+                                <li>{{ cl.place}}</li>
+                            </ul>
+                        </div>
+                    </a>
                 </div>
-            </a>
-        {% empty %}
-            <p>おすすめクラスはありません</p>
-        {% endfor %}
+            {% empty %}
+                <p>おすすめクラスはありません</p>
+            {% endfor %}
+        </div>
+    </div>
+    <div>
+        <form action="{{request.META.HTTP_REFERER}}" method = "get"> 
+            {% csrf_token %}
+            <input type="submit" value="前のページにもどる" class="previous_page_btn">
+        </form>
     </div>
 </div>
 

@@ -1,48 +1,55 @@
 {% extends 'base.html' %}
 
 {% block main %}
-    <div class="wrapper">
-        <h1>検索条件</h1>
-        <li>曜日: {{day}}</li>
-        <li>学期: {{term}}</li>
-        <li>授業形態: {{class_form}}</li>
-        <li>場所: {{place}}</li>
-    </div>
-    <div class="title">
-        <h1>検索結果一覧</h1>
-        <p>
-            <form action="{% url 'result' %}", method = "post">
-                {% csrf_token %}
-                {{sort_form}}
-                <input type="submit" value="検索", class="btn search_btn">
-            </form>
-        </p>
-        <p>検索結果<span>{{query_cnt}}</span>件</p>
-    </div>
-    <div class="wrapper">
-        {% for cl in querys %}
-            <a href="{% url 'class' cl.id %}">
-                <div class="class_result">
-                    <div class="class_result_left">
-                        <h2>{{ cl.class_name }}</h2>
-                        <p>{{ cl.teacher }}先生</p>
-                    </div>
-                    <div class="class_result_middle">
-                        <ul>
-                            <li>{{ cl.year }}年度</li>
-                            <li>{{ cl.term }}</li>
-                            <li>{{ cl.place}}</li>
-                        </ul>
-                    </div>
-                    <div class="class_result_right">
-                        <ul>
-                            <li>{{ cl.favorite }}</li>
-                        </ul>
-                    </div>
-                </div>
-            </a>
-        {% empty %}
-        <p>該当するデータがありません</p>
+    <div class="search_conditions">
+        {% for condition in search_conditions %}
+            <li class = "condition">{{condition}}</li>
         {% endfor %}
     </div>
+    <div class="title">
+        <div class="title_left">検索結果<span>{{query_cnt}}</span>件</div>
+        <div class="title_right">
+            <form action="{% url 'result' %}" method = "post">
+                {% csrf_token %}
+                {{sort_form}}
+                <input type="submit" value="並び替え", class="sort_btn">
+            </form>
+        </div>
+    </div>
+
+    <div class="wrapper">
+        <div class="class_w">
+            {% for cl in querys %}
+                <div class="class_result">
+                    <a href="{% url 'class' cl.id %}">
+                        <div class="class_result_content">
+                            <h2>
+                                {{ cl.class_name }}
+                                <span class='teacher_name'>{{ cl.teacher }}先生</span>                        
+                            </h2>
+                            <ul class="flex">
+                                <li><i class="fas fa-heart fa-fw my-pink"></i>{{ cl.favorite }}</li>
+                                <li><i class="far fa-comment fa-fw"></i>0</li>
+                                <li>A率{{cl.a_ratio}}</li>
+                                <li>評定平均{{cl.average_evaluation}}</li>
+                            </ul>
+                            <ul>
+                                <li>{{ cl.year }}年</li>
+                                <li>{{ cl.term }}</li>
+                                <li>{{ cl.place}}</li>
+                            </ul>
+                        </div>
+                    </a>
+                </div>
+            {% empty %}
+                <p>おすすめクラスはありません</p>
+            {% endfor %}
+        </div>
+        <div class="result_bottom">
+            <a class="back_btn"href={% url 'index' %}>戻る</a>
+        </div>
+    </div>
+
+
+
 {% endblock main %}

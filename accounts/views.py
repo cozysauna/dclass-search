@@ -28,6 +28,11 @@ class LogoutView(views.LogoutView):
             self.logout()
         return redirect('/')
 
+    def get(self, *args, **kwargs):
+        if self.request.user.is_authenticated:
+            self.logout()
+        return redirect('/')
+
 class SignupView(views.SignupView):
     template_name = 'accounts/signup.html'
     form_class = SignupUserForm

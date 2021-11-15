@@ -2,16 +2,42 @@
 
 {% block main %}
     <div class="wrapper">
-        <h1>{{cl.class_name}}</h1>
-        <form action="{% url 'add_comment' user.id cl.id %}", method = "post">
-            {% csrf_token %}
-            <h1>コメント</h1>
-            {{form.text}}
-            <h2>星</h2>
-            {{form.star}}
-            <div class="center">
-                <input type="submit" value="投稿", class="btn search_btn">
-            </div>
-        </form>
+        <div class="margin_center">
+            <h1>{{cl.class_name}}<span class="teacher_span">{{cl.teacher}}先生</span></h1>
+            <form action="{% url 'add_comment' user.id cl.id %}", method = "post">
+                {% csrf_token %}
+                <div class="star_template_w">
+                    <div class="stars">
+                        {% for radio in form.star %}
+                            {{ radio.tag }}
+                            <label for="id_star_{{ forloop.counter0 }}">★</label>
+                        {% endfor %}
+                    </div> 
+                    <div class="comment_template">テンプレート</div>
+                </div>    
+                <div> 
+                    {{form.text}}
+                </div>
+                <div class="center">
+                    <input type="submit" value="投稿", class="btn search_btn">
+                </div>
+            </form>
+        </div>
     </div>
+
+
+    <script
+        src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+        crossorigin="anonymous">
+    </script>
+    
+    <script>
+    'use strict'
+    $(document).ready(function(){
+        $(".comment_template").click(function(){
+            $(".comment").text('#授業の雰囲気\n\n\n#わかりやすさ\n\n\n#教科書は使用するか')
+        });
+    });
+    </script>
 {% endblock main %}

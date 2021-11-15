@@ -82,10 +82,14 @@ class ClassSeachForm(forms.Form):
                                     attrs={'class': 'radio'})
                                 ) 
 
+    keyword = forms.CharField(label='keyword',
+                                required=False,
+                                widget=forms.TextInput({'class': 'keyword', 'placeholder': '授業名や教師で検索'}))
+
 
 class SortForm(forms.Form):
     sort = forms.ChoiceField(
-        label='並び替え',
+        label='',
         choices=(
             ('0', '指定なし'),
             ('1', 'いいねが多い順番'),
@@ -96,7 +100,7 @@ class SortForm(forms.Form):
     )
 
 class CommentForm(forms.Form):
-    text = forms.CharField(label='コメント', widget=forms.Textarea)
+    text = forms.CharField(label='授業コメント', widget=forms.Textarea({'class': 'comment', 'placeholder': 'コメント'}))
     star = forms.ChoiceField(label='星',
                         choices=(
                             ('1', '1'),
@@ -105,5 +109,8 @@ class CommentForm(forms.Form):
                             ('4', '4'),
                             ('5', '5'),
                         ),
-                        initial='1',
+                        initial='3',
+                        widget=forms.RadioSelect(
+                            attrs={'class': 'radio'}
+                        )
                         )

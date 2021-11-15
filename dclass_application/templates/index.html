@@ -3,103 +3,114 @@
 {% block main %}
     <div class="wrapper">
         <h1 class="title heading">授業を探す</h1>
-        <p class="how_to_search"><i class="fas fa-search"></i>条件から探す</p>
-        <form action="{% url 'result' %}", method = "post" class="search_form">
-            {% csrf_token %}
-            <div class="radio_wrap">
-                {% for radio in form.term %}
-                    {{ radio.tag }}
-                    <label for="id_term_{{ forloop.counter0 }}">{{ radio.choice_label }}</label>
-                {% endfor %}
+            <form action="{% url 'result' %}" method = "post" class="search_form">
+                {% csrf_token %}
+                <div class = 'search_with_terms'>
+                    <p class="how_to_search"><i class="fas fa-search fa-fw"></i>条件から探す</p>
+                    <div class="radio_wrap">
+                        {% for radio in form.term %}
+                            {{ radio.tag }}
+                            <label for="id_term_{{ forloop.counter0 }}">{{ radio.choice_label }}</label>
+                        {% endfor %}
+                    </div>
+                    <div class="radio_wrap">
+                        {% for radio in form.day %}
+                            {{ radio.tag }}
+                            <label for="id_day_{{ forloop.counter0 }}">{{ radio.choice_label }}</label>
+                        {% endfor %}
+                    </div>
+                    <div class="radio_wrap">
+                        {% for radio in form.time %}
+                            {{ radio.tag }}
+                            <label for="id_time_{{ forloop.counter0 }}">{{ radio.choice_label }}</label>
+                        {% endfor %}
+                    </div>
+                    <div class="radio_wrap">
+                        {% for radio in form.place %}
+                            {{ radio.tag }}
+                            <label for="id_place_{{ forloop.counter0 }}">{{ radio.choice_label }}</label>
+                        {% endfor %}
+                    </div>
+                    <div class="radio_wrap">
+                        {% for radio in form.class_form %}
+                            {{ radio.tag }}
+                            <label for="id_class_form_{{ forloop.counter0 }}">{{ radio.choice_label }}</label>
+                        {% endfor %}
+                    </div>
+                    <div class="radio_wrap">
+                        {% for radio in form.year %}
+                            {{ radio.tag }}
+                            <label for="id_year_{{ forloop.counter0 }}">{{ radio.choice_label }}</label>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="search_with_keyword">
+                    <p class="how_to_search"><i class="fas fa-chalkboard-teacher fa-fw"></i>授業名・教師で探す</p>
+                    <div>
+                        {{ form.keyword }}
+                    </div>
+                    <div class="center">
+                        <input type="submit" value="検索", class="btn search_btn">
+                    </div>
+                </div>
+            </form>
+            <div class="center reset_condition">
+                <a href={% url 'index' %}>検索条件のクリア</a>
             </div>
-            <div class="radio_wrap">
-                {% for radio in form.day %}
-                    {{ radio.tag }}
-                    <label for="id_day_{{ forloop.counter0 }}">{{ radio.choice_label }}</label>
-                {% endfor %}
-            </div>
-            <div class="radio_wrap">
-                {% for radio in form.time %}
-                    {{ radio.tag }}
-                    <label for="id_time_{{ forloop.counter0 }}">{{ radio.choice_label }}</label>
-                {% endfor %}
-            </div>
-            <div class="radio_wrap">
-                {% for radio in form.place %}
-                    {{ radio.tag }}
-                    <label for="id_place_{{ forloop.counter0 }}">{{ radio.choice_label }}</label>
-                {% endfor %}
-            </div>
-            <div class="radio_wrap">
-                {% for radio in form.class_form %}
-                    {{ radio.tag }}
-                    <label for="id_class_form_{{ forloop.counter0 }}">{{ radio.choice_label }}</label>
-                {% endfor %}
-            </div>
-            <div class="radio_wrap">
-                {% for radio in form.year %}
-                    {{ radio.tag }}
-                    <label for="id_year_{{ forloop.counter0 }}">{{ radio.choice_label }}</label>
-                {% endfor %}
-            </div>
-            <div class="center">
-                <input type="submit" value="検索", class="btn search_btn">
-            </div>
-        </form>
-        <div class="center reset_condition">
-            <a href={% url 'index' %}>検索条件のクリア</a>
-        </div>
     </div>
 
     <div class="wrapper">
         <h1>おすすめ授業</h1>
-        {% for cl in recommend_data %}
-            <a href="{% url 'class' cl.id %}">
+        <div class="class_w">
+            {% for cl in recommend_data %}
                 <div class="class_result">
-                    <div class="class_result_left">
-                        <h2>{{ cl.class_name }}</h2>
-                        <p class='teacher_name'>{{ cl.teacher }}先生</p>
-                    </div>
-                    <div class="class_result_middle">
-                        <ul>
-                            <li>{{ cl.year }}年度</li>
-                            <li>{{ cl.term }}</li>
-                            <li>{{ cl.place}}</li>
-                        </ul>
-                    </div>
-                    <div class="class_result_right">
-                        <ul>
-                            <li><i class="fas fa-heart fa-fw my-pink"></i>{{ cl.favorite }}</li>
-                        </ul>
-                    </div>
+                    <a href="{% url 'class' cl.id %}">
+                        <div class="class_result_content">
+                            <h2>
+                                {{ cl.class_name }}
+                                <span class='teacher_name'>{{ cl.teacher }}先生</span>                        
+                            </h2>
+                            <ul class="flex">
+                                <li><i class="fas fa-heart fa-fw my-pink"></i>{{ cl.favorite }}</li>
+                                <li><i class="far fa-comment fa-fw"></i>0</li>
+                                <li>A率{{cl.a_ratio}}</li>
+                                <li>評定平均{{cl.average_evaluation}}</li>
+                            </ul>
+                            <ul>
+                                <li>{{ cl.year }}年</li>
+                                <li>{{ cl.term }}</li>
+                                <li>{{ cl.place}}</li>
+                            </ul>
+                        </div>
+                    </a>
                 </div>
-            </a>
-        {% endfor %}
+            {% empty %}
+                <p>おすすめクラスはありません</p>
+            {% endfor %}
+        </div>
     </div>
 
     <div class="wrapper">
         <h1>最近のコメント</h1>
-        {% for comment in recent_comments %}
-            <a href="{% url 'class' comment.cl.id %}">
-                <div class="recent_comment">
-                    <div class="recent_comment_left">
-                        <h2>{{comment.cl.class_name}}</h2>
-                        <p>{{ comment.cl.teacher }}先生</p>
-
-                    </div>
-                    <div class="recent_comment_middle">
-                        <p>{{comment.text}}</p>
-                    </div>
-                    <div class="recent_comment_right">
-                        {% comment %} <p>評価:<span class='star'>{{comment.get_star}}</span></p> {% endcomment %}
-                        <span class="star">{{comment.get_star}}</span><span class="my-gray">{{comment.get_left_star}}</span>
-                    </div>
+        <div class="comment_w">
+            {% for comment in recent_comments %}
+                <div class="class_result">
+                    <a href="{% url 'class' comment.cl.id %}">
+                        <div class="comment_result_content">
+                            <h2>
+                            {{comment.cl.class_name}}
+                            <span class='teacher_name'>{{ comment.cl.teacher }}先生</span>  
+                            </h2>
+                            <span class="star">{{comment.get_star}}</span><span class="my-gray">{{comment.get_left_star}}</span>
+                            <p>{{ comment.cl.teacher }}先生</p>
+                            <p>{{comment.text}}</p>
+                        </div>
+                    </a>
                 </div>
-            </a>
-        {% empty %}
-            <p>コメントがありません</p>
-        {% endfor %}
-
+            {% empty %}
+                <p>コメントがありません</p>
+            {% endfor %}
+        </div>
     </div>
 
 {% endblock main %}

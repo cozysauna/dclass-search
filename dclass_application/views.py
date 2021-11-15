@@ -39,6 +39,14 @@ class ResultView(ListView):
         request.session['seach_params'] = search_params
         return render(request, 'result.html', params)
 
+    def get(self, request):
+        search_params = request.session['search_params']
+        querys = self.get_queryset(search_params)
+        params = self.get_params(querys, search_params)
+        request.session['seach_params'] = search_params
+        return render(request, 'result.html', params)
+
+
     def get_queryset(self, search_params):
         if 'sort' in search_params:
             if search_params['sort'] == '1':
@@ -56,23 +64,37 @@ class ResultView(ListView):
             query = query.filter(day=search_params['day'])
         if 'term' in search_params:
             query = query.filter(term=search_params['term'])
+        
+        if search_params['keyword']:
+            query = query.filter(class_name__contains=search_params['keyword'])
         return query
 
     def get_params(self, querys, search_params):        
         params = {
             'querys': querys,
             'query_cnt': querys.count(),
-            'sort_form': SortForm
+            'sort_form': SortForm,
+            'search_conditions': [],
         }
         for cond in self.get_conditions():
             if cond in search_params:
-                params[cond] = search_params[cond]
-            else:
-                params[cond] = '指定なし'
+                params['search_conditions'].append(search_params[cond])
+                # params[cond] = search_params[cond]
+            # else:
+            #     params[cond] = '指定なし'
+
+        print(params['search_conditions'])
         return params
 
     def get_field_names(self):
-        return [field.name for field in self.model._meta.get_fields()]
+        field_names = [
+            'day',
+            'term',
+            'sort',
+            'keyword'
+        ]
+        # return [field.name for field in self.model._meta.get_fields()]
+        return field_names
 
     def get_conditions(self):
         conds = ['day', 'term', 'class_form', 'place']
@@ -95,15 +117,10 @@ def ClassView(request, pk):
 def FavoriteView(request, uspk, clpk):
     cl = Classes.objects.get(pk=clpk)
     user = CustomUser.objects.get(pk=uspk)
-    print('--------------------------')
-    print(cl, user)
     user.favorite_class.add(cl)
     user.save()
-    params = {
-        'cl': cl,
-    }
-    params['checked_favorite'] = True
-    return render(request, 'class.html', params)
+
+    return redirect('class', clpk)
 
 
 def RemoveFavoriteView(request, uspk, clpk):
@@ -111,11 +128,8 @@ def RemoveFavoriteView(request, uspk, clpk):
     user = CustomUser.objects.get(pk=uspk)
     user.favorite_class.remove(cl)
     user.save()
-    params = {
-        'cl': cl,
-    }
-    params['checked_favorite'] = False
-    return render(request, 'class.html', params)
+
+    return redirect('class', clpk)
 
 
 def AddCommentView(request, uspk, clpk):
@@ -127,24 +141,21 @@ def AddCommentView(request, uspk, clpk):
         return render(request, 'add_comment.html', params)
     else:
         text = request.POST['text']
-        star = request.POST['star']
-        
+        # cssでstarのindex番号を逆順にしているため
+        star = str(6 - int(request.POST['star']))
         cl = Classes.objects.get(pk=clpk)
         user = CustomUser.objects.get(pk=uspk)
 
         comment = Comment(text=text, star=star, cl = cl, user=user)
         comment.save()
 
+        return redirect('class', clpk)
 
-        RELATED_CLASS_CNT = 5
-        related_classs = Classes.objects.filter(place=cl.place)
-        params = {
-            'cl': cl,
-            'related_classes': related_classs[:RELATED_CLASS_CNT],
-        }
-        if request.user.is_authenticated:
-            params['checked_favorite'] = request.user.favorite_class.filter(pk=clpk).exists()
-        return render(request, 'class.html', params)
+def RemoveCommentView(request, cmpk):
+    if request.method == 'GET':
+        cl = Comment.objects.get(pk=cmpk)
+        cl.delete()
+    return redirect('index')
 
 
 def GoodView(request, clpk):
@@ -152,15 +163,5 @@ def GoodView(request, clpk):
     cl.favorite += 1
     cl.save()
 
-    RELATED_CLASS_CNT = 5
-    cl = Classes.objects.get(pk=clpk)
-    related_classs = Classes.objects.filter(place=cl.place)
-    comments = Comment.objects.filter(cl=cl)
-    params = {
-        'cl': cl,
-        'related_classes': related_classs[:RELATED_CLASS_CNT],
-        'comments': comments,
-    }
-    if request.user.is_authenticated:
-        params['checked_favorite'] = request.user.favorite_class.filter(pk=clpk).exists()
-    return render(request, 'class.html', params)
+    return redirect('class', clpk)
+
