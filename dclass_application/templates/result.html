@@ -23,20 +23,25 @@
                 <div class="class_result">
                     <a href="{% url 'class' cl.id %}">
                         <div class="class_result_content">
-                            <h2>
-                                {{ cl.class_name }}
-                                <span class='teacher_name'>{{ cl.teacher }}先生</span>                        
-                            </h2>
-                            <ul class="flex">
-                                <li><i class="fas fa-heart fa-fw my-pink"></i>{{ cl.favorite }}</li>
-                                <li><i class="far fa-comment fa-fw"></i>0</li>
-                                <li>A率{{cl.a_ratio}}</li>
-                                <li>評定平均{{cl.average_evaluation}}</li>
-                            </ul>
                             <ul>
-                                <li>{{ cl.year }}年</li>
-                                <li>{{ cl.term }}</li>
-                                <li>{{ cl.place}}</li>
+                                <li>
+                                    <h2>
+                                        {{ cl.class_name }}
+                                        <span class='teacher_name'>{{ cl.teacher }}先生</span>                        
+                                    </h2>
+                                </li>
+                                <li>
+                                    <p class="tag">{{ cl.year }}年</p>
+                                    <p class="tag">{{ cl.term }}</p>
+                                    <p class="tag">{{ cl.place}}</p>
+                                </li>
+                                <li>
+                                    <p class="class_a_average_evaluation">A率 {{cl.get_round_a_ratio}}%</p>
+                                    <p class="class_a_average_evaluation">評定平均 {{cl.average_evaluation}}</p> 
+                                <li>
+                                    <p><i class="fas fa-heart fa-fw my-pink"></i>{{ cl.favorite }}</p>
+                                    <p><i class="far fa-comment fa-fw"></i>{{cl.comment_num}}</p>
+                                </li>
                             </ul>
                         </div>
                     </a>
@@ -47,7 +52,8 @@
         </div>
         <div class="result_bottom">
             <a class="back_btn"href={% url 'index' %}>戻る</a>
-        </div>
+        </div> 
+
     </div>
 
 

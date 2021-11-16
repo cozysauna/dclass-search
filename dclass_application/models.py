@@ -53,6 +53,10 @@ class Classes(models.Model):
     test_ratio = models.IntegerField(default=0)
     report_ratio = models.IntegerField(default=0)
     participation_ratio = models.IntegerField(default=0)
+    comment_num = models.IntegerField(default=0)
+
+    def get_round_a_ratio(self):
+        return int(self.a_ratio)
 
     def __str__(self):
         return self.class_name +':'+ str(self.year)+':'+str(self.code)

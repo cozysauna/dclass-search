@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import IndexView, ResultView, ClassView, FavoriteView, RemoveFavoriteView, AddCommentView, RemoveCommentView, GoodView
+from .views import IndexView, ResultView, ClassView, FavoriteView, RemoveFavoriteView, AddCommentView, RemoveCommentView, GoodView, RemoveCommentDoubleCheckView
 urlpatterns = [
     path('', IndexView.as_view(), name = 'index'),
     path('result', ResultView.as_view(), name = 'result'),

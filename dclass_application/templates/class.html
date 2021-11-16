@@ -121,31 +121,6 @@
 
     </div>
     <div class="profile_comment">
-        {% comment %} <h3><i class="fas fa-square fa-fw my-blue"></i>コメント</h3>
-        <div class="comments">
-            {% for comment in comments %}
-                <div class="recent_comment">
-                    <div class="recent_comment_left">
-                        <p>{{comment.text}}</p>
-                    </div>
-                    <div class="recent_comment_middle">
-                    </div>
-                    <div class="recent_comment_right">
-                        <span class="star">{{comment.get_star}}</span><span class="my-gray">{{comment.get_left_star}}</span>
-                    </div>
-                </div>
-            {% empty %}
-                <div>コメントがありません</div>
-            {% endfor %}
-        </div>
-        <div class="comment_w">
-            {% if user.is_authenticated %}
-                <a href={% url 'add_comment' user.id cl.id %}><i class="fas fa-pencil-alt fa-fw"></i>コメントを書く</a>
-            {% else %}
-                <a href={% url 'account_login' %}><i class="fas fa-pencil-alt fa-fw"></i>コメントを書く</a>
-            {% endif %}
-        </div> {% endcomment %}
-
         <h3><i class="fas fa-square fa-fw my-blue"></i>コメント</h3>
         <div class="comment_w">
             {% for comment in comments %}
@@ -175,31 +150,11 @@
     </div>
     <div class="related_recommend">
         <h3><i class="fas fa-square fa-fw my-blue"></i>関連おすすめ授業</h3>
-        <div class="class_w">
+        <div class="class_w"> 
             {% for cl in related_classes %}
-                <div class="class_result">
-                    <a href="{% url 'class' cl.id %}">
-                        <div class="class_result_content">
-                            <h2>
-                                {{ cl.class_name }}
-                                <span class='teacher_name'>{{ cl.teacher }}先生</span>                        
-                            </h2>
-                            <ul class="flex">
-                                <li><i class="fas fa-heart fa-fw my-pink"></i>{{ cl.favorite }}</li>
-                                <li><i class="far fa-comment fa-fw"></i>0</li>
-                                <li>A率{{cl.a_ratio}}</li>
-                                <li>評定平均{{cl.average_evaluation}}</li>
-                            </ul>
-                            <ul>
-                                <li>{{ cl.year }}年</li>
-                                <li>{{ cl.term }}</li>
-                                <li>{{ cl.place}}</li>
-                            </ul>
-                        </div>
-                    </a>
-                </div>
+                {% include "_class_list.html" %}
             {% empty %}
-                <p>おすすめクラスはありません</p>
+                <p>おすすめの授業はありません</p>
             {% endfor %}
         </div>
     </div>

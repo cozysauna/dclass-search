@@ -1,0 +1,26 @@
+<div class="class_result">
+    <a href="{% url 'class' cl.id %}">
+        <div class="class_result_content">
+            <ul>
+                <li>
+                    <h2>
+                        {{ cl.class_name }}
+                        <span class='teacher_name'>{{ cl.teacher }}先生</span>                        
+                    </h2>
+                </li>
+                <li>
+                    <p class="tag">{{ cl.year }}年</p>
+                    <p class="tag">{{ cl.term }}</p>
+                    <p class="tag">{{ cl.place}}</p>
+                </li>
+                <li>
+                    <p class="class_a_average_evaluation">A率 {{cl.get_round_a_ratio}}%</p>
+                    <p class="class_a_average_evaluation">評定平均 {{cl.average_evaluation}}</p> 
+                <li>
+                    <p><i class="fas fa-heart fa-fw my-pink"></i>{{ cl.favorite }}</p>
+                    <p><i class="far fa-comment fa-fw"></i>{{cl.comment_num}}</p>
+                </li>
+            </ul>
+        </div>
+    </a>
+</div>

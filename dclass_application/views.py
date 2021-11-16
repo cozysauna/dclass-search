@@ -14,8 +14,8 @@ from django.http.response import HttpResponseRedirect
 class IndexView(TemplateView):
     class_model = Classes
     comment_model = Comment
-    RECOMMEND_CNT = 5
-    RECENT_COMMENT = 5
+    RECOMMEND_CNT = 6
+    RECENT_COMMENT = 6
     def get(self, request):
         params = {
             'form': ClassSeachForm,
@@ -83,7 +83,6 @@ class ResultView(ListView):
             # else:
             #     params[cond] = '指定なし'
 
-        print(params['search_conditions'])
         return params
 
     def get_field_names(self):
@@ -101,14 +100,15 @@ class ResultView(ListView):
         return conds
 
 def ClassView(request, pk):
-    RELATED_CLASS_CNT = 5
+    RELATED_CLASS_CNT = 6
+    COMMENT_CNT = 6
     cl = Classes.objects.get(pk=pk)
     related_classs = Classes.objects.filter(place=cl.place)
     comments = Comment.objects.filter(cl=cl)
     params = {
         'cl': cl,
         'related_classes': related_classs[:RELATED_CLASS_CNT],
-        'comments': comments,
+        'comments': comments[:COMMENT_CNT],
     }
     if request.user.is_authenticated:
         params['checked_favorite'] = request.user.favorite_class.filter(pk=pk).exists()
@@ -149,13 +149,33 @@ def AddCommentView(request, uspk, clpk):
         comment = Comment(text=text, star=star, cl = cl, user=user)
         comment.save()
 
+        cl = Classes.objects.get(pk=clpk)
+        cl.comment_num += 1
+        cl.save()
+
         return redirect('class', clpk)
+
+
+def RemoveCommentDoubleCheckView(request, clpk, cmpk):
+    if request.method == 'GET':
+        com = Comment.objects.get(pk=cmpk)
+        initial_dict = {"star":str(6-int(com.star)), "text":com.text}
+        params = {
+            'cl': Classes.objects.get(id=clpk),
+            'comment': com,
+            'form': CommentForm(initial=initial_dict)
+        }
+        return render(request, 'remove_comment_double_check.html', params)
+
 
 def RemoveCommentView(request, cmpk):
     if request.method == 'GET':
-        cl = Comment.objects.get(pk=cmpk)
-        cl.delete()
-    return redirect('index')
+        com = Comment.objects.get(pk=cmpk)
+        com.cl.comment_num -= 1
+        com.cl.save()
+        com.delete()
+
+    return redirect('profile')
 
 
 def GoodView(request, clpk):
