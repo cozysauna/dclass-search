@@ -1,5 +1,5 @@
 from typing import Sequence
-from django.http.response import Http404
+from django.http.response import Http404, HttpResponse
 from django.views.generic import TemplateView, ListView, FormView
 from django.views import View
 from django.core.paginator import Paginator
@@ -114,25 +114,24 @@ def ClassView(request, pk):
         params['checked_favorite'] = request.user.favorite_class.filter(pk=pk).exists()
     return render(request, 'class.html', params)
 
-def FavoriteView(request, uspk, clpk):
-    cl = Classes.objects.get(pk=clpk)
-    user = CustomUser.objects.get(pk=uspk)
-    user.favorite_class.add(cl)
-    user.save()
 
-    return redirect('class', clpk)
-
-
-def RemoveFavoriteView(request, uspk, clpk):
-    cl = Classes.objects.get(pk=clpk)
-    user = CustomUser.objects.get(pk=uspk)
-    user.favorite_class.remove(cl)
-    user.save()
-
-    return redirect('class', clpk)
+def AjaxFavoriteView(request):
+    if request.method == 'GET':
+        uspk = request.user.id
+        clpk = request.GET['clpk']
+        cl = Classes.objects.get(pk=clpk)
+        user = CustomUser.objects.get(pk=uspk)
+        if request.user.favorite_class.filter(pk=clpk).exists():
+            user.favorite_class.remove(cl)
+        else:
+            user.favorite_class.add(cl)
+        user.save()
+        return HttpResponse('Completed')
+    return HttpResponse('NotCompleted')
 
 
-def AddCommentView(request, uspk, clpk):
+def AddCommentView(request, clpk):
+    uspk = request.user.id
     if request.method == 'GET':
         params = {
             'cl': Classes.objects.get(pk=clpk),
@@ -156,18 +155,6 @@ def AddCommentView(request, uspk, clpk):
         return redirect('class', clpk)
 
 
-def RemoveCommentDoubleCheckView(request, clpk, cmpk):
-    if request.method == 'GET':
-        com = Comment.objects.get(pk=cmpk)
-        initial_dict = {"star":str(6-int(com.star)), "text":com.text}
-        params = {
-            'cl': Classes.objects.get(id=clpk),
-            'comment': com,
-            'form': CommentForm(initial=initial_dict)
-        }
-        return render(request, 'remove_comment_double_check.html', params)
-
-
 def RemoveCommentView(request, cmpk):
     if request.method == 'GET':
         com = Comment.objects.get(pk=cmpk)
@@ -177,6 +164,20 @@ def RemoveCommentView(request, cmpk):
 
     return redirect('profile')
 
+
+def AjaxGoodView(request):
+    if request.method == "GET":
+        clpk = request.GET['clpk']
+        check_bool = request.GET['check_bool']
+        cl = Classes.objects.get(pk=clpk)
+        if check_bool == 'true':
+            cl.favorite -= 1
+        else:
+            cl.favorite += 1
+        cl.save()
+        return HttpResponse('Completed')
+
+    return HttpResponse('NotCompleted')
 
 def GoodView(request, clpk):
     cl = Classes.objects.get(pk=clpk)

@@ -7,21 +7,24 @@
         {% comment %} <p>{{ cl.teacher }}先生</p> {% endcomment %}
         <div class="share">
             <div class="share_left">
-                <a href="" class="share_btn"><i class="fab fa-twitter fa-fw twitter"></i>ツイートする</a>
-                <a href="" class="share_btn"><i class="fab fa-line fa-fw line"></i>シェアする</a>
+                {% comment %} <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-text="同志社大学の授業のA率や評定平均、口コミなどが簡単に検索できます！" data-hashtags="dclass" data-lang="ja" data-show-count="false">ツイート</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script> {% endcomment %}
+                {% comment %} <a href="" class="share_btn"><i class="fab fa-twitter fa-fw twitter"></i>ツイートする</a> {% endcomment %}
+                {% comment %} <a href="" class="share_btn"><i class="fab fa-line fa-fw line"></i>シェアする</a> {% endcomment %}
+                {% comment %} <div class="line-it-button" data-lang="ja" data-type="share-a" data-ver="3" data-url="http://127.0.0.1:8000/" data-color="default" data-size="small" data-count="false" style="display: none;"></div> {% endcomment %}
+                {% comment %} <script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script> {% endcomment %}
             </div>
             <div class="share_right">
                 {% if user.is_authenticated %}  
                     {% if checked_favorite %}
-                    <a href={% url 'remove_favorite' user.id cl.id %} class="favorite">お気に入り済み</a> 
+                        <a class="favorite favorite_check" name="{{cl.id}}">お気に入り</a>
                     {% else %}
-                    <a href={% url 'favorite' user.id cl.id %} class="favorite">お気に入り</a>
+                        <a class="favorite" name="{{cl.id}}">お気に入り</a>
                     {% endif %}
                 {% else %}
-                    {% comment %} <a href={% url 'account_login' %} class="a_border">ログインすることでお気に入り登録が可能です</a> {% endcomment %}
                     <a href={% url 'account_login' %} class="favorite">お気に入り</a>
                 {% endif %}
-                <a href={% url 'good' cl.id %} class="good"><i class="fas fa-check fa-fw"></i>いいね{{cl.favorite}}</a>
+                {% comment %} <a href={% url 'good' cl.id %} class="good"><i class="fas fa-check fa-fw"></i>いいね{{cl.favorite}}</a> {% endcomment %}
+                <a class="good" name="{{cl.id}}"><i class="fas fa-check fa-fw"></i>いいね<span class="good_cnt">{{cl.favorite}}</span></a>
             </div>
         </div>
     </div>
@@ -141,7 +144,7 @@
 
         <div class="comment_btn">
             {% if user.is_authenticated %}
-                <a href={% url 'add_comment' user.id cl.id %}><i class="fas fa-pencil-alt fa-fw"></i>コメントを書く</a>
+                <a href={% url 'add_comment' cl.id %}><i class="fas fa-pencil-alt fa-fw"></i>コメントを書く</a>
             {% else %}
                 <a href={% url 'account_login' %}><i class="fas fa-pencil-alt fa-fw"></i>コメントを書く</a>
             {% endif %}
@@ -158,6 +161,13 @@
             {% endfor %}
         </div>
     </div>
+        <div>
+            <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-text="同志社大学の授業のA率や評定平均、口コミなどが簡単に検索できます！" data-hashtags="dclass" data-lang="ja" data-show-count="false">ツイート</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+            {% comment %} <a href="" class="share_btn"><i class="fab fa-twitter fa-fw twitter"></i>ツイートする</a> {% endcomment %}
+            {% comment %} <a href="" class="share_btn"><i class="fab fa-line fa-fw line"></i>シェアする</a> {% endcomment %}
+            <div class="line-it-button" data-lang="ja" data-type="share-a" data-ver="3" data-url="http://127.0.0.1:8000/" data-color="default" data-size="small" data-count="false" style="display: none;"></div>
+            <script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+        </div>
     <div>
         <form action="{{request.META.HTTP_REFERER}}" method = "get"> 
             {% csrf_token %}
@@ -167,44 +177,79 @@
 </div>
 
 
-<script>
-var ctx = document.getElementById("chart");
-var myLineChart = new Chart(ctx, {
-// グラフの種類：折れ線グラフを指定
-type: 'line',
-data: {
-    // x軸の各メモリ
-    labels: ['2019', '2020', '2021'],
-    datasets: [
-    {
-        label: 'A率',
-        data: [72, 77, 56],
-        borderColor: "#ec4343",
-        backgroundColor: "#00000000"
-    },
-    ],
-},
-options: {
-    title: {
-    display: true,
-    text: 'A率の遷移（過去３年）'
-    },
-    scales: {
-    yAxes: [{
-        ticks: {
-        suggestedMax: 100,
-        suggestedMin: 0,
-        stepSize: 20,  // 縦メモリのステップ数
-        callback: function(value, index, values){
-            return  value +  '%'  // 各メモリのステップごとの表記（valueは各ステップの値）
-        }
-        }
-    }]
-    },
-}
-});
-  
-</script>
-
 
 {% endblock main %}
+
+
+{% block javascript %}
+<script>
+    'use strict'
+    var ctx = document.getElementById("chart");
+    var myLineChart = new Chart(ctx, {
+    // グラフの種類：折れ線グラフを指定
+    type: 'line',
+    data: {
+        // x軸の各メモリ
+        labels: ['2019', '2020', '2021'],
+        datasets: [
+        {
+            label: 'A率',
+            data: [72, 77, 56],
+            borderColor: "#ec4343",
+            backgroundColor: "#00000000"
+        },
+        ],
+    },
+    options: {
+        title: {
+        display: true,
+        text: 'A率の遷移（過去３年）'
+        },
+        scales: {
+        yAxes: [{
+            ticks: {
+            suggestedMax: 100,
+            suggestedMin: 0,
+            stepSize: 20,  // 縦メモリのステップ数
+            callback: function(value, index, values){
+                return  value +  '%'  // 各メモリのステップごとの表記（valueは各ステップの値）
+            }
+            }
+        }]
+        },
+    }
+    });
+    
+    $(".favorite").click(function(){
+        $.ajax(
+            {
+                type:"GET",
+                url: "ajaxfavorite",
+                data: {
+                    clpk: $(this).attr('name') 
+                }
+            }
+        );
+        $(this).toggleClass("favorite_check");
+    });
+
+    $(".good").click(function(){
+        const check_bool = $(this).hasClass("good_check");
+        $.ajax(
+            {
+                type:"GET",
+                url: "ajaxgood",
+                data: {
+                    clpk: $(this).attr('name'),
+                    check_bool: check_bool,
+                }
+            }
+        );
+        let good_cnt = $(".good_cnt").text();
+        if (check_bool) good_cnt --;
+        else good_cnt ++;
+        $(this).toggleClass("good_check");
+        $(".good_cnt").text(good_cnt);
+    });
+</script>
+{% endblock javascript %}

@@ -4,7 +4,7 @@
     <div class="wrapper">
         <div class="margin_center">
             <h1>{{cl.class_name}}<span class="teacher_span">{{cl.teacher}}先生</span></h1>
-            <form action="{% url 'add_comment' user.id cl.id %}", method = "post">
+            <form action="{% url 'add_comment' cl.id %}", method = "post">
                 {% csrf_token %}
                 <div class="star_template_w">
                     <div class="stars">
@@ -25,19 +25,15 @@
         </div>
     </div>
 
+{% endblock main %}
 
-    <script
-        src="https://code.jquery.com/jquery-3.4.1.min.js"
-        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-        crossorigin="anonymous">
-    </script>
-    
-    <script>
+{% block javascript %}    
+<script>
     'use strict'
     $(document).ready(function(){
         $(".comment_template").click(function(){
             $(".comment").text('#授業の雰囲気\n\n\n#わかりやすさ\n\n\n#教科書は使用するか')
-        });
+        });  
     });
-    </script>
-{% endblock main %}
+</script>
+{% endblock javascript %}

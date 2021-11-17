@@ -463,12 +463,21 @@ html {
 }
 
 .favorite {
-    background-color: orange;
-    color: white;
+    /* background-color: orange; */
+    /* color: white; */
+    color: var(--my-blue);
+    border: 1px solid var(--my-blue);
+    box-sizing: border-box;
     height: 20px;
     border-radius: 3px;
     padding: 10px 15px;
     font-size: 13px;
+    cursor: pointer;
+}
+
+.favorite_check {
+    background-color: var(--my-blue);
+    color: white;
 }
 
 /* .share_btn {
@@ -480,12 +489,18 @@ html {
 } */
 
 .good {
-    background-color: var(--my-blue);
-    color: white;
     height: 20px;
     border-radius: 3px;
     padding: 10px 15px;
     font-size: 13px;
+    border: 1px solid var(--my-blue);
+    color: var(--my-blue);
+    cursor: pointer;
+}
+
+.good_check {
+    background-color: var(--my-blue);
+    color: white; 
 }
 
 .my-blue {
