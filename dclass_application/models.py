@@ -31,6 +31,8 @@ class Classes(models.Model):
     出席率: paticipation_ratio
     """
     class_name = models.CharField(max_length=100)
+
+    #昨年の評価、標的平均
     a_ratio = models.FloatField(default=0.0)
     b_ratio = models.FloatField(default=0.0)
     c_ratio = models.FloatField(default=0.0)
@@ -38,6 +40,11 @@ class Classes(models.Model):
     f_ratio = models.FloatField(default=0.0)
     o_ratio = models.FloatField(default=0.0)
     average_evaluation = models.FloatField(default=0.0)
+
+    #2,3年前のA率
+    two_ago_a_ratio = models.FloatField(default=0.0)
+    three_ago_a_ratio = models.FloatField(default=0.0)
+
     term = models.CharField(max_length=100)
     year = models.IntegerField(default=2021)
     place = models.CharField(max_length=100)
@@ -45,16 +52,17 @@ class Classes(models.Model):
     day = models.CharField(max_length=100)
     time = models.CharField(max_length=100)
     favorite = models.IntegerField(default=0)
-    textbook = models.CharField(max_length=100)
+    textbook = models.CharField(max_length=100) #文字列でリスト代用
     code = models.CharField(max_length=100)
     faculty = models.CharField(max_length=100) 
-    teacher = models.CharField(max_length=100)
+    teacher = models.CharField(max_length=100) #文字列でリストを代用
     syllabus_link = models.CharField(max_length=100)
     test_ratio = models.IntegerField(default=0)
     report_ratio = models.IntegerField(default=0)
     participation_ratio = models.IntegerField(default=0)
     comment_num = models.IntegerField(default=0)
     num_student = models.IntegerField(default=0)
+    credit = models.IntegerField(default=0)
 
     def get_round_a_ratio(self):
         return int(self.a_ratio)

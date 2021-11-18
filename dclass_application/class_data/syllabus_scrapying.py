@@ -1,179 +1,264 @@
+import requests
+from bs4 import BeautifulSoup
 import traceback
 from selenium import webdriver
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.common.by import By
+import chromedriver_binary
 from time import sleep
 
 
-# シラバス
-URL = 'https://syllabus.doshisha.ac.jp/'
 options = webdriver.ChromeOptions()
 driver = webdriver.Chrome(options=options)
 
 
-data_columns = [
-    'class_name',
-    'a_ratio',
-    'b_ratio',
-    'c_ratio',
-    'd_ratio',
-    'f_ratio',
-    'o_ratio',
-    'average_evaluation',
-    'term',
-    'year',
-    'place',
-    'class_form',
-    'day',
-    'time',
-    'textbook',
-    'code',
-    'faculty',
-    'teacher',
-    'syllabus_link',
-    'test_ratio',
-    'report_ratio',
-    'participation_ratio',
-]
+open_f = open('syllabus_plane_data/General_Education/2021.txt')
+FACULTY = 'General_Education'
+YEAR = '2021'
+data = open_f.read()
+soup = BeautifulSoup(data, 'html.parser')
+tables = soup.select("table")[2].select("tr")[2:]
 
 
-data = {
-    'class_name':'',
-    'grade_distribution':{
-        'a_ratio': 0, 
-        'b_ratio': 0, 
-        'c_ratio': 0, 
-        'd_ratio': 0, 
-        'f_ratio': 0, 
-        'o_ratio': 0, 
-    },
-    'average_evaluation': 0,
-    'term': '',
-    'year': '',
-    'place': '',
-    'class_form': '', 
-    'day': '',
-    'time': '',
-    'textbook': '',
-    'code': '',
-    'faculty ': '',
-    'teacher': [],
-    'syllabus_link': '',
-    'test_ratio': 0,
-    'report_ratio': 0,
-    'participation_ratio': 0,
-}
+def mold_txt(txt):
+    if len(txt.select('a')) >= 1: 
+        txt = [txt.select_one('a').text[1:]]
+    else:
+        new_txt = str(txt.string).split('\n')
+        if new_txt == ['None']:
+            new_txt = [e.text for e in txt]
+        txt = new_txt
 
 
-YEAR = '2020'
-FACULTY = '全学共通教養教育科目（外国語教育科目・保健体育科目以外）'
-faculty_num = {
-    '神学部': '11001',
-    '文学部': '11002',
-    '法学部': '11003',
-    '経済学部': '11004',
-    '商学部': '11005',
-    '政策学部': '11007',
-    '文化情報学部': '11008',
-    '社会学部': '11009',
-    '生命医科学部': '11014',
-    'スポーツ健康科学部': '11015',
-    '理工学部': '11016',
-    '心理学部': '11017',
-    'グローバル・コミュニケーション学部': '11019',
-    '国際教養インスティチュート学部': '11020',
-    'グローバル地域文化学部': '11022',
-    '全学共通教養教育科目（外国語教育科目・保健体育科目以外）': '11060',
-    '全学共通教養教育科目（保健体育科目）': '11061',
-    '全学共通教養教育科目（外国語教育科目）': '11065',
-    '日本語・日本文化教育科目': '11090'
-}
+    #要素解除
+    remove_elems = [' ', '\t', '\xa0', '\n']
+    for remove_elem in remove_elems:
+        txt = [tx.replace(remove_elem, '') for tx in txt]
 
-FACURUTY_NUM = '11060'
+    #空白置換
+    txt = [tx.replace('\u3000', ' ') for tx in txt]
+    txt = [tx for tx in txt if tx]
 
 
-def scrape(year, faculty):
-    ret_data = []
-    txts = driver.find_element(by=By.CLASS_NAME, value="sortable")
-    txts = txts.find_element(by=By.CSS_SELECTOR, value="tbody")
-    txts_by_tr = txts.find_elements(by=By.CSS_SELECTOR, value="tr")[::2]
-    for txt in txts_by_tr:
+    if len(txt) >= 1 and '曜日' in txt[0]: 
+        txt[0] = txt[0].split('曜日')
+
+    if len(txt) >= 1 and '集中' in txt[0]:
+        txt = [[['集中講義'], '0']]
+
+
+
+    return txt
+
+def dict_to_str(dic):
+    return '?'.join(str(v) for v in dic.values())
+
+def str_to_dict(st):
+    columns =  [
+        'class_name',
+        'grade_distribution',
+        'average_evaluation',
+        'a_ratio_history',
+        'term',
+        'year',
+        'place',
+        'class_form',
+        'day',
+        'time',
+        'textbook',
+        'code',
+        'faculty',
+        'teacher',
+        'syllabus_link',
+        'test_ratio',
+        'report_ratio',
+        'participation_ratio',
+        'credit'
+    ]
+    st = st.split('?')
+    ret = dict()
+    list_columns = ['grade_distribution', 'a_ratio_history', 'textbook', 'teacher']
+    for i, column in enumerate(columns):
+        if column in list_columns:
+            ret[column] = eval(st[i])
+        else:
+            ret[column] = st[i]
+    return ret
+
+
+
+def get_syllabus_link(code, year):
+    if '-' not in code: code += '-000'
+    faculty_number = code[1:5]
+    url = 'https://syllabus.doshisha.ac.jp/html/'+ year +'/'+ faculty_number + '/' + code.replace('-', '') + '.html'
+    return url
+
+def get_syllabus_data(url):
+    term = '春'
+    class_form = '対面授業'
+    test_ratio = 0
+    report_ratio = 0
+    participation_ratio = 0
+
+    data = requests.get(url).text
+    soup = BeautifulSoup(data, 'html.parser')
+    head = soup.find_all('td', class_='show__content-in')[0].select("tbody")
+    grades = soup.find('table', class_='show__grades').select('td')
+    txt = []
+    for grade in grades:
+        grade = [elem for elem in grade.text.split('\n') if elem]
+        grade = [elem.replace('\xa0', '') for elem in grade][0]
+        txt.append(grade)
+
+    for i, tx in enumerate(txt):
+        if '%' in tx:
+            try:
+                percent = int(tx[:-1])
+            except:
+                percent = 0
+            if i == 0: continue
+            if 'テスト' in txt[i-1]:
+                test_ratio += percent
+            elif 'レポート' in txt[i-1]:
+                report_ratio += percent
+            elif '平常点' in txt[i-1]:
+                participation_ratio += percent
+            else: pass
+ 
+    for elem in head:
+        txt = elem.text.split('\n')
+        for tx in txt:
+            if '秋学期' in tx:
+                term = '秋'
+            if 'ネット' in tx:
+                class_form = 'オンライン授業'
+
+
+    text_book_flag = False
+    textbook = []
+    for elem in soup.select_one('body'):
+        txt = elem.text 
+        for tx in txt.split('\n'):
+            for t in tx.split('\n'):
+                if not t: continue
+                if '＜参考文献/Reference Book＞' in t or '＜備考/Remarks＞' in t: text_book_flag = False 
+                if text_book_flag: 
+                    for e in t.split('\n'):
+                        e = e.replace('\xa0', '')
+                        if not e: continue 
+                        if '『' not in e: continue
+                        textbook.append(e)
+                if '＜テキスト/Textbook＞' in t: text_book_flag = True 
+
+    textbook = [book for book in textbook if '使用しない' not in book]
+    if textbook == []: textbook = None
+
+    return term, class_form, test_ratio, report_ratio, participation_ratio, textbook
+    
+
+def mold_table(table, year, faculty):
+    table = [mold_txt(txt) for txt in table]
+    class_data = {
+        'class_name': table[2][0],
+        # ratio a, b, c, d, f, o
+        'grade_distribution':[-1, -1, -1, -1, -1, -1],
+        'average_evaluation': -1,
+        'a_ratio_history': [-1, -1, -1],
+        'term': None, # シラバス
+        'year': year,
+        'place': table[4][0],
+        'class_form': None, # シラバス
+        'day': table[6][0][0][0],
+        'time': table[6][0][1][0],
+        'textbook': None, # シラバス
+        'code': table[0][0],
+        'faculty ': faculty,
+        'teacher': table[3],
+        'syllabus_link': get_syllabus_link(table[0][0], YEAR), # シラバス
+        'test_ratio': None, # シラバス
+        'report_ratio': None, # シラバス
+        'participation_ratio': None, # シラバス
+        # 'num_student': None, # シラバス
+        'credit': table[5][0][0]
+    }
+    term, class_form, test_ratio, report_ratio, participation_ratio, textbook = get_syllabus_data(class_data['syllabus_link'])
+    class_data['term'] = term 
+    class_data['class_form'] = class_form
+    class_data['test_ratio'] = test_ratio
+    class_data['report_ratio'] = report_ratio
+    class_data['participation_ratio'] = participation_ratio
+    class_data['textbook'] = textbook
+    return class_data
+
+
+# 成績評価(得点分布検索)
+URL = 'https://duet.doshisha.ac.jp/kokai/html/fi/fi020/FI02001G.html'
+
+
+write_f = open('final_data/General_Education.txt', 'w')
+for table in tables[:10]:
+    table = table.select("td")
+    class_data = mold_table(table, year=YEAR, faculty=FACULTY)
+    code = class_data['code']
+
+    # for i in range(3):
+    for i in range(2, -1, -1):
+        driver.get(URL)
+        sleep(1)
+
+        #年度
+        dropdown = driver.find_element(by=By.ID, value='form1:kaikoNendolist')
+        select = Select(dropdown)
+        select.select_by_value(str(2020-i))
+
+        # code
+        code_forward = code[:code.index('-')]
+        code_back = code[code.index('-')+1:]
+        code_f = driver.find_element(by=By.NAME, value='form1:_id90')
+        code_f.send_keys(code_forward)
+
+
+        code_b = driver.find_element(by=By.NAME, value='form1:_id92')
+        code_b.send_keys(code_back)
+
+        #検索ボタン
+        search_btn = driver.find_element(by=By.ID, value='form1:enterDodoZikko')
+        search_btn.click()
+        sleep(0.2)
+
+
+        txts = driver.find_element(by=By.CLASS_NAME, value="sortable")
+        txts = txts.find_element(by=By.CSS_SELECTOR, value="tbody")
+        txts_by_tr = txts.find_elements(by=By.CSS_SELECTOR, value="tr")[::2]
+
+        if len(txts_by_tr) == 0: continue
+        txt = txts_by_tr[0]
         txts_by_td = txt.find_elements(by=By.CSS_SELECTOR, value="td")
         teacher = txts_by_td[3].get_attribute('innerHTML').split('\n')
         teacher = [elm.strip(' ').replace('\u3000', ' ')for elm in teacher]
         teacher = [elm for elm in teacher if elm and elm != '<span><br></span>']
-        class_data = {
-            'class_name': txts_by_td[2].get_attribute('innerHTML'),
-            'grade_distribution':{
-                'a_ratio': txts_by_td[5].get_attribute('innerHTML'), 
-                'b_ratio': txts_by_td[6].get_attribute('innerHTML'), 
-                'c_ratio': txts_by_td[7].get_attribute('innerHTML'), 
-                'd_ratio': txts_by_td[8].get_attribute('innerHTML'), 
-                'f_ratio': txts_by_td[9].get_attribute('innerHTML'), 
-                'o_ratio': txts_by_td[10].get_attribute('innerHTML'), 
-            },
-            'average_evaluation': txts_by_td[11].get_attribute('innerHTML') ,
-            'term': txts_by_td[1].get_attribute('innerHTML'),
-            'year': year,
-            'place': '',
-            'class_form': '', 
-            'day': '',
-            'time': '',
-            'textbook': '',
-            'code': txts_by_td[0].get_attribute('innerHTML'),
-            'faculty ': faculty,
-            'teacher': teacher,
-            'syllabus_link': '',
-            'test_ratio': 0,
-            'report_ratio': 0,
-            'participation_ratio': 0,
-            'num_student': txts_by_td[4].get_attribute('innerHTML')
-        }
-        ret_data.append(class_data)
-    return ret_data
 
-try:
-    # file_name = YEAR + FACULTY + '.json'
-    # open_file = open(file_name, 'w')
-    # driver.get(URL)
-    # sleep(1)
+        a_ratio = txts_by_td[5].get_attribute('innerHTML')
+        b_ratio = txts_by_td[6].get_attribute('innerHTML')
+        c_ratio = txts_by_td[7].get_attribute('innerHTML')
+        d_ratio = txts_by_td[8].get_attribute('innerHTML')
+        f_ratio = txts_by_td[9].get_attribute('innerHTML')
+        o_ratio = txts_by_td[10].get_attribute('innerHTML')
+        a_ratio = a_ratio if a_ratio else -1
+        b_ratio = b_ratio if b_ratio else -1 
+        c_ratio = c_ratio if c_ratio else -1
+        d_ratio = d_ratio if d_ratio else -1
+        f_ratio = f_ratio if f_ratio else -1
+        o_ratio = o_ratio if o_ratio else -1
 
-    # #年度
-    # dropdown = driver.find_element(by=By.ID, value='form1:kaikoNendolist')
-    # select = Select(dropdown)
-    # select.select_by_value(YEAR)
+        class_data['class_name'] = txts_by_td[2].get_attribute('innerHTML')
+        if i == 0:
+            class_data['grade_distribution'] = [a_ratio, b_ratio, c_ratio, d_ratio, f_ratio, o_ratio]
+            class_data['average_evaluation'] = txts_by_td[11].get_attribute('innerHTML')
 
-    # #学部
-    # dropdown = driver.find_element(by=By.NAME, value='form1:_id86')
-    # select = Select(dropdown)
-    # select.select_by_value(FACURUTY_NUM)
+        print(a_ratio)
+        class_data['a_ratio_history'][i] = a_ratio
 
-    # #検索ボタン
-    # # search_btn = driver.find_element_by_id('')
-    # search_btn = driver.find_element(by=By.ID, value='form1:enterDodoZikko')
-    # search_btn.click()
-    # sleep(0.2)
-
-    # #データ数取得
-    # data_num = int(driver.find_element(by=By.CLASS_NAME, value="pagectl-title").text.split()[-1][1:-1])
-    # # page_num = (data_num + 50 -1) // 50 
-    # page_num = 1
-    # sleep(2)
-    # now_page = 1
-    # while now_page <= page_num:
-    #     data = scrape(year=YEAR, faculty=FACULTY)
-    #     for one_data in data:
-    #         pass
-    #         # open_file.write(dumps(one_data)+'\n')
-
-    #     driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
-    #     sleep(0.3)
-    #     now_page += 1
-    #     nx = driver.find_element(by=By.LINK_TEXT, value=str(now_page))
-    #     nx.click()
-
-    # sleep(3)
-
-
-finally:
-    driver.quit()
+    class_data = dict_to_str(class_data)
+    write_f.write(class_data + '\n')
+    # print(class_data)

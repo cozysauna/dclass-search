@@ -185,4 +185,3 @@ def GoodView(request, clpk):
     cl.save()
 
     return redirect('class', clpk)
-
