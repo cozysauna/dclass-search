@@ -13,7 +13,8 @@ driver = webdriver.Chrome(options=options)
 
 
 open_f = open('syllabus_plane_data/General_Education/2021.txt')
-FACULTY = 'General_Education'
+# FACULTY = 'General_Education'
+FACULTY = '一般教養'
 YEAR = '2021'
 data = open_f.read()
 soup = BeautifulSoup(data, 'html.parser')
@@ -256,7 +257,6 @@ for table in tables[:10]:
             class_data['grade_distribution'] = [a_ratio, b_ratio, c_ratio, d_ratio, f_ratio, o_ratio]
             class_data['average_evaluation'] = txts_by_td[11].get_attribute('innerHTML')
 
-        print(a_ratio)
         class_data['a_ratio_history'][i] = a_ratio
 
     class_data = dict_to_str(class_data)

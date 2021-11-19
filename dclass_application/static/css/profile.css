@@ -1,0 +1,33 @@
+.remove_comment {
+    background-color: var(--my-pink);
+    color: white;
+    border-radius: 5px;
+    padding: 3px 5px;
+    border: none;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.profile_detail {
+    background-color: var(--my-light-gray);
+    border-radius: 10px;
+    margin: 30px 0;
+    padding: 20px 15px;
+}
+
+.profile_w {
+    padding: 20px 5px;
+}
+
+.profile_comment {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.favorite_class_w {
+    margin: 30px 0;
+}
+
+.posted_comment_w {
+    margin: 30px 0;
+}

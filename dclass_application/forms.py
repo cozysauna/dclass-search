@@ -72,15 +72,6 @@ class ClassSeachForm(forms.Form):
                                 widget=forms.RadioSelect(
                                     attrs={'class': 'radio'})
                                 )
-    year = forms.ChoiceField(label='年度',
-                                choices=(
-                                    ('0', '指定なし'),
-                                    ('2021', '2021'),
-                                ),
-                                initial='0',
-                                widget=forms.RadioSelect(
-                                    attrs={'class': 'radio'})
-                                ) 
 
     keyword = forms.CharField(label='keyword',
                                 required=False,
@@ -91,7 +82,7 @@ class SortForm(forms.Form):
     sort = forms.ChoiceField(
         label='',
         choices=(
-            ('0', '指定なし'),
+            ('0', '並び替え'),
             ('1', 'いいねが多い順番'),
             ('2', 'A率が高い順'),
             ('3', '評定平均が高い順')

@@ -1,5 +1,8 @@
 {% extends 'base.html' %}
-
+{% load static %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/_log.css' %}">
+{% endblock css %}
 
 {% block main %}
     <div class="wrapper">

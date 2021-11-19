@@ -1,4 +1,10 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <link rel="stylesheet" href="{% static 'css/_class_list.css' %}">
+{% endblock css %}
 
 {% block main %}
     <div class="wrapper">
@@ -37,12 +43,6 @@
                             <label for="id_class_form_{{ forloop.counter0 }}">{{ radio.choice_label }}</label>
                         {% endfor %}
                     </div>
-                    <div class="radio_wrap">
-                        {% for radio in form.year %}
-                            {{ radio.tag }}
-                            <label for="id_year_{{ forloop.counter0 }}">{{ radio.choice_label }}</label>
-                        {% endfor %}
-                    </div>
                 </div>
                 <div class="search_with_keyword">
                     <p class="how_to_search"><i class="fas fa-chalkboard-teacher fa-fw"></i>授業名・教師で探す</p>
@@ -74,18 +74,7 @@
         <h1>最近のコメント</h1>
         <div class="comment_w">
             {% for comment in recent_comments %}
-                <div class="class_result">
-                    <a href="{% url 'class' comment.cl.id %}">
-                        <div class="comment_result_content">
-                            <h2>
-                            {{comment.cl.class_name}}
-                            <span class='teacher_name'>{{ comment.cl.teacher }}先生</span>  
-                            </h2>
-                            <span class="star">{{comment.get_star}}</span><span class="my-gray">{{comment.get_left_star}}</span>
-                            <p>{{comment.text}}</p>
-                        </div>
-                    </a>
-                </div>
+                {% include "_comment_list.html" %}
             {% empty %}
                 <p>コメントがありません</p>
             {% endfor %}

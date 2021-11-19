@@ -1,17 +1,19 @@
 {% extends 'base.html' %}
 
+{% load static %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/class.css' %}">
+    <link rel="stylesheet" href="{% static 'css/_class_list.css' %}">
+{% endblock css %}
+
+
 {% block main %}
 <div class="wrapper">
     <div class="class_title">
-        <h1>{{ cl.class_name}}<span class='teacher_span'>{{cl.teacher}}先生</span></h1>
+        <h1>{{ cl.class_name}}<span class='teacher_span'>{{cl.teacher}}</span></h1>
         {% comment %} <p>{{ cl.teacher }}先生</p> {% endcomment %}
         <div class="share">
             <div class="share_left">
-                {% comment %} <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-text="同志社大学の授業のA率や評定平均、口コミなどが簡単に検索できます！" data-hashtags="dclass" data-lang="ja" data-show-count="false">ツイート</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script> {% endcomment %}
-                {% comment %} <a href="" class="share_btn"><i class="fab fa-twitter fa-fw twitter"></i>ツイートする</a> {% endcomment %}
-                {% comment %} <a href="" class="share_btn"><i class="fab fa-line fa-fw line"></i>シェアする</a> {% endcomment %}
-                {% comment %} <div class="line-it-button" data-lang="ja" data-type="share-a" data-ver="3" data-url="http://127.0.0.1:8000/" data-color="default" data-size="small" data-count="false" style="display: none;"></div> {% endcomment %}
-                {% comment %} <script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script> {% endcomment %}
             </div>
             <div class="share_right">
                 {% if user.is_authenticated %}  
@@ -35,6 +37,19 @@
                 <tr>
                     <th>年度</th>
                     <td>{{ cl.year }}年</td>
+                </tr>
+                <tr>
+                    <th>先生</th>
+                    {% comment %} <td>{{ cl.teacher }}</td> {% endcomment %}
+                    {% comment %} <td><a href={% url 'result' %}>{{ cl.teacher }}</a></td> {% endcomment %}
+                    <td class="teacher">
+                        <p class="teacher_link">{{ cl.teacher }}</p>
+                        <form action="{% url 'result' %}" method = "post" name="{{cl.teacher}}" class="teacher_search">
+                            {% csrf_token %}
+                            {{ form.keyword }}
+                            <input type="submit" class="teacher_search_btn hide">
+                        </form>
+                    </td>
                 </tr>
                 <tr>
                     <th>学期</th>
@@ -61,14 +76,19 @@
                     <td>{{cl.class_form}}</td>
                 </tr>
                 <tr>
+                    <th>授業コード</th>
+                    <td>{{cl.code}}</td>
+                </tr>
+                <tr>
+                    <th>シラバス</th>
+                    <td><a href="{{cl.syllabus_link}}" target="blank" class="syllabus">シラバス</a></td>
+                    {% comment %} <td>{{cl.syllabus_link}}</td> {% endcomment %}
+                </tr>
+                <tr>
                     <th>教科書</th>           
                     <td>
-                        {% comment %} <div>{{cl.textbook}}</div> {% endcomment %}
-                        <div>本の名前</div>
-                        <div>
-                            ISBN:9784779508301 
-                        </div>
-                        <div><a target= 'blank' class = "amazon" href="https://www.amazon.co.jp/%E3%81%BA%E3%82%93%E3%81%A6%E3%82%8B-%E3%82%B7%E3%83%A3%E3%83%BC%E3%83%97%E3%83%9A%E3%83%B3-%E3%82%B0%E3%83%A9%E3%83%95%E3%82%AE%E3%82%A21000-PG1013-0-3mm/dp/B0013NE3PQ/ref=zg_bs_89413051_1?_encoding=UTF8&refRID=YXMV3GT0TE9JNASPGGNR&th=1">Amazonでチェック</a></div>
+                        <div>{{cl.textbook}}</div>
+                        {% comment %} <div><a target= 'blank' class = "amazon" href="https://www.amazon.co.jp/%E3%81%BA%E3%82%93%E3%81%A6%E3%82%8B-%E3%82%B7%E3%83%A3%E3%83%BC%E3%83%97%E3%83%9A%E3%83%B3-%E3%82%B0%E3%83%A9%E3%83%95%E3%82%AE%E3%82%A21000-PG1013-0-3mm/dp/B0013NE3PQ/ref=zg_bs_89413051_1?_encoding=UTF8&refRID=YXMV3GT0TE9JNASPGGNR&th=1">Amazonでチェック</a></div> {% endcomment %}
                     </td>
                 </tr>
             </table>
@@ -78,6 +98,9 @@
                 <div class="a_chart">
                     {% if user.is_authenticated %}
                         <canvas id="chart"></canvas>
+                        <input type="hidden" id="a_ratio" value="{{cl.a_ratio}}">
+                        <input type="hidden" id="two_ago_a_ratio" value="{{ cl.two_ago_a_ratio}}">
+                        <input type="hidden" id="three_ago_a_ratio" value="{{ cl.three_ago_a_ratio}}">
                     {% else %}
                         <p>ログインするとA率を確認できます</p>
                     {% endif %}
@@ -127,15 +150,12 @@
         <h3><i class="fas fa-square fa-fw my-blue"></i>コメント</h3>
         <div class="comment_w">
             {% for comment in comments %}
-                <div class="class_result">
-                    <a href="{% url 'class' comment.cl.id %}">
-                        <div class="comment_result_content">
-                            <h2>{{comment.cl.class_name}}</h2>
-                            <span class="star">{{comment.get_star}}</span><span class="my-gray">{{comment.get_left_star}}</span>
-                            <p>{{ comment.cl.teacher }}先生</p>
-                            <p>{{comment.text}}</p>
-                        </div>
-                    </a>
+                {% comment %} {% include "_comment_list.html" %} {% endcomment %}
+                <div class="comment_result">
+                    <div class="comment_result_content">
+                        <span class="star">{{comment.get_star}}</span><span class="my-gray">{{comment.get_left_star}}</span>
+                        <p>{{comment.text}}</p>
+                    </div>
                 </div>
             {% empty %}
                 <p>コメントがありません</p>
@@ -161,18 +181,22 @@
             {% endfor %}
         </div>
     </div>
-        <div>
-            <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-text="同志社大学の授業のA率や評定平均、口コミなどが簡単に検索できます！" data-hashtags="dclass" data-lang="ja" data-show-count="false">ツイート</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-            {% comment %} <a href="" class="share_btn"><i class="fab fa-twitter fa-fw twitter"></i>ツイートする</a> {% endcomment %}
-            {% comment %} <a href="" class="share_btn"><i class="fab fa-line fa-fw line"></i>シェアする</a> {% endcomment %}
-            <div class="line-it-button" data-lang="ja" data-type="share-a" data-ver="3" data-url="http://127.0.0.1:8000/" data-color="default" data-size="small" data-count="false" style="display: none;"></div>
-            <script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
-        </div>
-    <div>
+
+    <div class="class_back_btn">
         <form action="{{request.META.HTTP_REFERER}}" method = "get"> 
             {% csrf_token %}
-            <input type="submit" value="前のページにもどる" class="previous_page_btn">
+            <input type="submit" value="もどる">
         </form>
+    </div>
+
+    <div class="class_footer">
+
+        <div class="margin_left">
+            <div class="line-it-button" data-lang="ja" data-type="share-a" data-ver="3" data-url="http://127.0.0.1:8000/" data-color="default" data-size="small" data-count="false" style="display: none;"></div>
+            <script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+            <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-text="同志社大学の授業のA率や評定平均、口コミなどが簡単に検索できます！" data-hashtags="dclass" data-lang="ja" data-show-count="false"></a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+        </div>
+
     </div>
 </div>
 
@@ -184,19 +208,36 @@
 {% block javascript %}
 <script>
     'use strict'
+    var a_ratio = $('#a_ratio').attr('value');
+    if (a_ratio < 0){
+        a_ratio = null;
+    };
+    var two_ago_a_ratio = $('#two_ago_a_ratio').attr('value');
+    if (two_ago_a_ratio < 0){
+        two_ago_a_ratio = null;
+    };
+    var three_ago_a_ratio = $('#three_ago_a_ratio').attr('value');
+    if (three_ago_a_ratio < 0){
+        three_ago_a_ratio = null;
+    };
+    const max_a = Math.max(a_ratio, two_ago_a_ratio, three_ago_a_ratio);
+    const grid_max = Math.min(100, max_a + 5);
+    
+
     var ctx = document.getElementById("chart");
     var myLineChart = new Chart(ctx, {
     // グラフの種類：折れ線グラフを指定
     type: 'line',
     data: {
         // x軸の各メモリ
-        labels: ['2019', '2020', '2021'],
+        labels: ['2018', '2019', '2020'],
         datasets: [
         {
-            label: 'A率',
-            data: [72, 77, 56],
+            // label: 'A率',
+            data: [three_ago_a_ratio, two_ago_a_ratio,a_ratio],
             borderColor: "#ec4343",
-            backgroundColor: "#00000000"
+            backgroundColor: "#00000000",
+            spanGaps: true, 
         },
         ],
     },
@@ -205,14 +246,17 @@
         display: true,
         text: 'A率の遷移（過去３年）'
         },
+        legend: {
+            display: false
+        },
         scales: {
         yAxes: [{
             ticks: {
-            suggestedMax: 100,
+            suggestedMax: grid_max,
             suggestedMin: 0,
             stepSize: 20,  // 縦メモリのステップ数
             callback: function(value, index, values){
-                return  value +  '%'  // 各メモリのステップごとの表記（valueは各ステップの値）
+                return  value +  '%'  // 各メモリのステップごとの表記
             }
             }
         }]
@@ -250,6 +294,13 @@
         else good_cnt ++;
         $(this).toggleClass("good_check");
         $(".good_cnt").text(good_cnt);
+    });
+
+    const teacher = $(".teacher_search").attr('name');
+    $("#id_keyword").val(teacher);
+    $("#id_keyword").addClass("hide");
+    $(".teacher").click(function(){
+        $(".teacher_search").submit();
     });
 </script>
 {% endblock javascript %}

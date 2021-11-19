@@ -1,42 +1,50 @@
 {% extends 'base.html' %}
 
+{% load static %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+    <link rel="stylesheet" href="{% static 'css/_class_list.css' %}">
+{% endblock css %}
+
 {% block main %}
     <div class="wrapper">
         <h1>プロフィール</h1>
-        <h3><i class="fas fa-square fa-fw my-blue"></i>お気に入り授業</h3>
-        <div class="class_w"> 
-            {% for cl in user.favorite_class.all %}
-                {% include "_class_list.html" %}
-            {% empty %}
-                <p>お気に入り登録はありません</p>
-            {% endfor %}
+        <div class="favorite_class_w">
+            <h3><i class="fas fa-square fa-fw my-blue"></i>お気に入り授業</h3>
+            <div class="class_w"> 
+                {% for cl in user.favorite_class.all %}
+                    {% include "_class_list.html" %}
+                {% empty %}
+                    <p>お気に入り登録はありません</p>
+                {% endfor %}
+            </div>
         </div>
 
-
-        <h3><i class="fas fa-square fa-fw my-blue"></i>投稿したコメント</h3>
-        <div class="comment_w">
-            {% for comment in mycomments %}
-                <div class="class_result">
-                    <div class="comment_result_content">
-                        <h2>
-                            {{comment.cl.class_name}}
-                            <a class="remove_comment" href={% url 'remove_comment'　comment.id %}>コメント解除</a>
-                        </h2>
-                        
-                        <span class="star">{{comment.get_star}}</span><span class="my-gray">{{comment.get_left_star}}</span>
-                        <p>{{comment.text}}</p>
+        <div class="posted_comment_w">
+            <h3><i class="fas fa-square fa-fw my-blue"></i>投稿したコメント</h3>
+            <div class="comment_w">
+                {% for comment in mycomments %}
+                    <div class="class_result">
+                        <div class="comment_result_content">
+                            <h2>
+                                {{comment.cl.class_name}}
+                                <a class="remove_comment" href={% url 'remove_comment'　comment.id %}>コメント解除</a>
+                            </h2>
+                            
+                            <span class="star">{{comment.get_star}}</span><span class="my-gray">{{comment.get_left_star}}</span>
+                            <p>{{comment.text}}</p>
+                        </div>
                     </div>
-                </div>
-            {% empty %}
-                <p>コメントがありません</p>
-            {% endfor %}
+                {% empty %}
+                    <p>コメントがありません</p>
+                {% endfor %}
+            </div>
+        </div>
+        {% include "_back_btn.html" %}
     </div>
 
 
 
-
-
-    </div>
 
 {% endblock main %}
 

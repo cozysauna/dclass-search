@@ -64,6 +64,10 @@ class Classes(models.Model):
     num_student = models.IntegerField(default=0)
     credit = models.IntegerField(default=0)
 
+    def get_short_faculty(self):
+        if self.faculty == 'グローバル・コミュニケーション': return 'グロコミ'
+        return self.faculty
+
     def get_round_a_ratio(self):
         return int(self.a_ratio)
 

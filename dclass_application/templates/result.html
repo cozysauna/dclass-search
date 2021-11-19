@@ -1,4 +1,10 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/result.css' %}">
+    <link rel="stylesheet" href="{% static 'css/_class_list.css' %}">
+{% endblock css %}
 
 {% block main %}
     <div class="search_conditions">
@@ -7,12 +13,12 @@
         {% endfor %}
     </div>
     <div class="title">
-        <div class="title_left">検索結果<span>{{query_cnt}}</span>件</div>
+        <h4 class="title_left">検索結果<span class="strong_result">{{query_cnt}}</span>件</h4>
         <div class="title_right">
             <form action="{% url 'result' %}" method = "post">
                 {% csrf_token %}
                 {{sort_form}}
-                <input type="submit" value="並び替え", class="sort_btn">
+                <input type="submit" value="並び替え", class="hide sort_btn">
             </form>
         </div>
     </div>
@@ -20,42 +26,25 @@
     <div class="wrapper">
         <div class="class_w">
             {% for cl in querys %}
-                <div class="class_result">
-                    <a href="{% url 'class' cl.id %}">
-                        <div class="class_result_content">
-                            <ul>
-                                <li>
-                                    <h2>
-                                        {{ cl.class_name }}
-                                        <span class='teacher_name'>{{ cl.teacher }}先生</span>                        
-                                    </h2>
-                                </li>
-                                <li>
-                                    <p class="tag">{{ cl.year }}年</p>
-                                    <p class="tag">{{ cl.term }}</p>
-                                    <p class="tag">{{ cl.place}}</p>
-                                </li>
-                                <li>
-                                    <p class="class_a_average_evaluation">A率 {{cl.get_round_a_ratio}}%</p>
-                                    <p class="class_a_average_evaluation">評定平均 {{cl.average_evaluation}}</p> 
-                                <li>
-                                    <p><i class="fas fa-heart fa-fw my-pink"></i>{{ cl.favorite }}</p>
-                                    <p><i class="far fa-comment fa-fw"></i>{{cl.comment_num}}</p>
-                                </li>
-                            </ul>
-                        </div>
-                    </a>
-                </div>
+                {% include "_class_list.html" %}
             {% empty %}
-                <p>おすすめクラスはありません</p>
+                <p>クラスがありません…</p>
             {% endfor %}
         </div>
-        <div class="result_bottom">
+        {% include "_back_btn.html" %}
+        {% comment %} <div class="result_bottom">
             <a class="back_btn"href={% url 'index' %}>戻る</a>
-        </div> 
+        </div>  {% endcomment %}
 
     </div>
 
-
-
 {% endblock main %}
+
+{% block javascript %}
+<script>
+    'use strict';
+    $("#id_sort").change(function(){
+        $(".sort_btn").click();
+    });
+</script>
+{% endblock javascript %}

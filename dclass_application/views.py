@@ -9,6 +9,7 @@ from .forms import ClassSeachForm, CommentForm, SortForm
 from .models import Classes, Comment
 from accounts.models import CustomUser
 from django.http.response import HttpResponseRedirect
+from django.db.models import Q
 
 
 class IndexView(TemplateView):
@@ -27,8 +28,10 @@ class IndexView(TemplateView):
 class ResultView(ListView):
     model = Classes
     def post(self, request):
-        if 'day' in request.POST:
-            search_params = {key: request.POST[key] for key in request.POST.keys() if key in self.get_field_names() and request.POST[key] != '0'}
+        if 'keyword' in request.POST: # To Do
+            search_params = {key: request.POST[key] for key in request.POST.keys() if request.POST[key] != '0'}
+            if not request.POST['keyword']: 
+                del search_params['keyword']
             request.session['search_params'] = search_params
         else:
             search_params = request.session['search_params']
@@ -56,17 +59,22 @@ class ResultView(ListView):
             elif search_params['sort'] == '3':
                 query = self.model.objects.all().order_by('average_evaluation').reverse()
             else:
-                query = self.model.objects.all()
+                query = self.model.objects.all().order_by('a_ratio').reverse()
         else:
-            query = self.model.objects.all()
+            query = self.model.objects.all().order_by('a_ratio').reverse()
 
         if 'day' in search_params:
             query = query.filter(day=search_params['day'])
         if 'term' in search_params:
             query = query.filter(term=search_params['term'])
-        
-        if search_params['keyword']:
-            query = query.filter(class_name__contains=search_params['keyword'])
+        if 'place' in search_params:
+            query = query.filter(term=search_params['place'])
+        if 'class_form' in search_params:
+            query = query.filter(term=search_params['class_form'])
+        if 'keyword' in search_params:
+            query = query.filter(
+                Q(class_name__contains=search_params['keyword']) | Q(teacher__contains=search_params['keyword'])
+            ).distinct()
         return query
 
     def get_params(self, querys, search_params):        
@@ -76,28 +84,22 @@ class ResultView(ListView):
             'sort_form': SortForm,
             'search_conditions': [],
         }
-        for cond in self.get_conditions():
+        for cond in self.get_field_names():
             if cond in search_params:
                 params['search_conditions'].append(search_params[cond])
-                # params[cond] = search_params[cond]
-            # else:
-            #     params[cond] = '指定なし'
 
         return params
 
     def get_field_names(self):
         field_names = [
-            'day',
             'term',
-            'sort',
+            'day',
+            'place',
+            'class_form',
             'keyword'
         ]
-        # return [field.name for field in self.model._meta.get_fields()]
         return field_names
 
-    def get_conditions(self):
-        conds = ['day', 'term', 'class_form', 'place']
-        return conds
 
 def ClassView(request, pk):
     RELATED_CLASS_CNT = 6
@@ -109,6 +111,7 @@ def ClassView(request, pk):
         'cl': cl,
         'related_classes': related_classs[:RELATED_CLASS_CNT],
         'comments': comments[:COMMENT_CNT],
+        'form': ClassSeachForm,
     }
     if request.user.is_authenticated:
         params['checked_favorite'] = request.user.favorite_class.filter(pk=pk).exists()
@@ -179,9 +182,3 @@ def AjaxGoodView(request):
 
     return HttpResponse('NotCompleted')
 
-def GoodView(request, clpk):
-    cl = Classes.objects.get(pk=clpk)
-    cl.favorite += 1
-    cl.save()
-
-    return redirect('class', clpk)
