@@ -96,14 +96,10 @@
         <div class="class_show_right">
             <div class="a_transition">
                 <div class="a_chart">
-                    {% if user.is_authenticated %}
-                        <canvas id="chart"></canvas>
-                        <input type="hidden" id="a_ratio" value="{{cl.a_ratio}}">
-                        <input type="hidden" id="two_ago_a_ratio" value="{{ cl.two_ago_a_ratio}}">
-                        <input type="hidden" id="three_ago_a_ratio" value="{{ cl.three_ago_a_ratio}}">
-                    {% else %}
-                        <p>ログインするとA率を確認できます</p>
-                    {% endif %}
+                    <canvas id="chart"></canvas>
+                    <input type="hidden" id="a_ratio" value="{{cl.a_ratio}}">
+                    <input type="hidden" id="two_ago_a_ratio" value="{{ cl.two_ago_a_ratio}}">
+                    <input type="hidden" id="three_ago_a_ratio" value="{{ cl.three_ago_a_ratio}}">
                 </div>
             </div>
 
@@ -300,6 +296,7 @@
     $("#id_keyword").val(teacher);
     $("#id_keyword").addClass("hide");
     $(".teacher").click(function(){
+        console.log('clicked');
         $(".teacher_search").submit();
     });
 </script>

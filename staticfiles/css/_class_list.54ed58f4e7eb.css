@@ -1,0 +1,162 @@
+.class_result_content {
+    padding: 15px;
+    box-sizing: border-box;
+}
+
+.class_result_content ul li {
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.class_result_content ul li:not(:last-child){
+    padding-bottom: 10px;
+}
+
+.class_result_content ul li:last-child {
+    justify-content: flex-end;
+}
+
+.class_result_content ul li:last-child p {
+    margin-left: 15px;
+}
+
+.class_result_a {
+    display: block;
+}
+
+.class_result {
+    width: calc(calc(100% - 60px)/3);
+    box-sizing: border-box;
+    border: 1px solid var(--my-gray);
+    border-radius: 5px;
+    margin: 10px 10px;
+    box-shadow: 0 3px 6px -2px #000a3c33;
+    transition: box-shadow .2s;
+}
+
+.class_result:hover {
+    box-shadow: 0 6px 6px -2px #000a3c33;
+}
+
+.class_result_title {
+    align-items: flex-end;
+}
+
+.evaluation_ratio {
+    width: 100%;
+    /* border: 1px solid var(--my-gray); */
+    /* border-radius: 5px; */
+    box-sizing: border-box;
+    margin-bottom: 20px;
+}
+
+.evaluation_ratio table {
+    width: 100%;
+    text-align: center;
+    border-collapse: collapse;
+    border-radius: 5px;
+}
+
+.evaluation_ratio table th {
+    border: solid 1px var(--my-light-gray);
+    background-color: var(--my-light-gray);
+}
+
+
+.evaluation_ratio table td {
+    border: solid 1px var(--my-light-gray);
+}
+
+.class_show {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.class_show_left {
+    width: 50%;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.class_show_right {
+    width: 50%;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.a_transition {
+    width: 100%;
+    border: 1px solid var(--my-gray);
+    border-radius: 5px;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+}
+
+.basic_info {
+    width: 100%;
+}
+
+.basic_info th {
+    border-top: 1px solid var(--my-gray);
+    box-sizing: border-box;
+    padding: 10px 0px;
+    width: 30%;
+}
+
+.basic_info td {
+    border-top: 1px solid var(--my-gray);
+    padding: 10px 0px;
+    box-sizing: border-box;
+}
+
+
+.tag {
+    /* background-color: var(--my-blue); */
+    /* color: white; */
+    border-radius: 3px;
+    box-sizing: border-box;
+    /* background-color: var(--my-light-gray); */
+    border: 1px solid var(--my-gray);
+    padding: 3px 10px;
+    max-width: 50%;
+}
+
+.tag:not(:last-child){
+    margin-right: 5px;
+}
+
+.imadegawa_tag {
+    background-color:white;
+    border: 1px solid #fd7e08;
+    color: #fd7e08; 
+}
+
+
+.kyoutanabe_tag {
+    background-color: white;
+    border: 1px solid #26ac45;
+    color:#26ac45;
+}
+
+
+.class_a_average_evaluation {
+    /* background-color:#898989;  */
+    /* color: white; */
+    width: 48%;
+    box-sizing: border-box;
+    padding: 1px 12px;
+    margin: 0 1%;
+    border-radius: 10px;
+    border: 1px solid var(--my-gray);
+    color: black;
+    /* font-weight: bold; */
+    text-align: center;
+}
+
+.score {
+    color: red;
+    font-weight: bold;
+}
+
+

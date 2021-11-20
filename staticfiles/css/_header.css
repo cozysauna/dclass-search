@@ -1,0 +1,17 @@
+.header_right {
+    margin-left: auto;
+    display: flex;
+}
+
+.header_right li {
+    padding: 0px 10px;
+    box-sizing: border-box;
+}
+
+header a {
+    color: white;
+}
+
+header ul {
+    display: flex;
+}

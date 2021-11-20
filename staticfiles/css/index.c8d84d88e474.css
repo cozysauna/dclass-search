@@ -1,0 +1,40 @@
+.search_with_terms {
+    margin-bottom: 10px;
+
+}
+.search_with_keyword {
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.how_to_search {
+    text-align: center;
+    font-size: 16px;
+    padding: 15px 0px;
+}
+
+.search_with_terms input[type='radio']:checked+label {
+    box-sizing: border-box;
+    border: 1px solid var(--my-gray);
+    color: white;
+    background-color: #1D9BF0;
+}
+
+.reset_condition a{
+    border-bottom: 1px solid black;
+}
+
+.recent_comment {  
+    width: 100%;
+    padding: 5px 10px;
+    box-sizing: border-box;
+    border-bottom: 1px solid var(--my-gray);
+    margin: 10px 0px 15px;
+    display: flex;
+}
+
+.search_btn {
+    background-color: #F06B6B;
+    width: 300px;
+    margin-top: 15px;
+}
