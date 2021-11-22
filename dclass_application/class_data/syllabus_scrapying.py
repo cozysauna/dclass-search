@@ -13,9 +13,10 @@ from time import sleep
 
 # PlaneData
 
-open_f = open('syllabus_plane_data/Social/2021.txt')
-write_f = open('final_data/Social.txt', 'a')
-FACULTY = '社会学部'
+open_f = open('syllabus_plane_data/Law/2021.txt')
+write_f = open('final_data/Law.txt', 'a')
+FACULTY = '法学部'
+# FACULTY = '社会学部'
 # FACULTY = '文学部'
 # FACULTY = '神学部'
 # FACULTY = '一般教養'
