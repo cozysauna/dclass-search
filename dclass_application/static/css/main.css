@@ -164,12 +164,9 @@ html {
 
 
 .btn {
-    color: white;
-    border: none;
     height: 40px;
     border-radius: 5px;
     cursor: pointer;
-    background-color: #1D9BF0;
 }
 
 .back_btn_w a{
@@ -242,23 +239,10 @@ html {
     text-align: center;
 }
 
-.login {
-    background-color: #F06B6B;
-}
 
 input[type='radio'] {
     display: none;
 }
-
-
-.radio_wrap {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    text-align: center;
-}
-
 
 .comment {
     width: 100%;
@@ -268,14 +252,9 @@ input[type='radio'] {
 
 
 
-.radio_wrap label{
-    box-sizing: border-box;
-    display: inline-block;
-    border: 1px solid var(--my-gray);
-    height: 50px;
-    width: 100%;
-    line-height: 50px;
-}
+
+
+
 
 
 .teacher_name {

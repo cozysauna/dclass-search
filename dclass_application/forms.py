@@ -3,6 +3,8 @@ from django import forms
 from django.core.exceptions import ValidationError
 
 from django.contrib.auth import get_user_model, authenticate
+from django.forms.forms import Form
+
 # from django.contrib.auth.models import User
 
 
@@ -29,9 +31,9 @@ class ClassSeachForm(forms.Form):
                                 ('土', '土'),
                             ),
                             initial='0',
-                            widget=forms.RadioSelect(
-                                attrs={'class': 'choice'}),
-                            )
+                            # widget=forms.RadioSelect(
+                            #     attrs={'class': 'choice'}),
+    )
     period = forms.ChoiceField(label='講時',
                             choices=(
                                 ('0', '指定なし'),
@@ -72,6 +74,25 @@ class ClassSeachForm(forms.Form):
                                 widget=forms.RadioSelect(
                                     attrs={'class': 'radio'})
                                 )
+
+    faculty = forms.ChoiceField(label='学部',
+                                choices=(
+                                    ('0', '指定なし'),
+                                    ('神学部', '神学部'),
+                                    ('文学部', '文学部'),
+                                    ('社会学部', '社会学部'),
+                                    ('法学部', '法学部'),
+                                    ('商学部', '商学部'),
+                                    ('政策部', '政策部'),
+                                    ('文化情報学部', '文化情報学部'),
+                                    ('理工学部', '理工学部'),
+                                    ('生命医科科学', '生命医科科学部'),
+                                    ('スポーツ健康学部', 'スポーツ健康学部'),
+                                    ('心理学部', '心理学部'),
+                                    ('グローバル・コミュニケーション学部', 'グローバル・コミュニケーション学部'),
+                                    ('グローバル地域文化学部', 'グローバル地域文化学部'),
+                                    ('一般教養', '一般教養')
+                                ))
 
     keyword = forms.CharField(label='keyword',
                                 required=False,

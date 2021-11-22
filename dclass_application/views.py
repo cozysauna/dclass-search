@@ -10,6 +10,7 @@ from .models import Classes, Comment
 from accounts.models import CustomUser
 from django.http.response import HttpResponseRedirect
 from django.db.models import Q
+from django.core.paginator import Paginator
 
 
 class IndexView(TemplateView):
@@ -27,6 +28,7 @@ class IndexView(TemplateView):
 
 class ResultView(ListView):
     model = Classes
+    paginate_by = 9
     def post(self, request):
         if 'keyword' in request.POST: # To Do
             search_params = {key: request.POST[key] for key in request.POST.keys() if request.POST[key] != '0'}
@@ -37,15 +39,23 @@ class ResultView(ListView):
             search_params = request.session['search_params']
             search_params['sort'] = request.POST['sort']
 
+
         querys = self.get_queryset(search_params)
+        querys = Paginator(querys, self.paginate_by)
+
         params = self.get_params(querys, search_params)
         request.session['seach_params'] = search_params
         return render(request, 'result.html', params)
 
     def get(self, request):
         search_params = request.session['search_params']
+
         querys = self.get_queryset(search_params)
-        params = self.get_params(querys, search_params)
+        querys = Paginator(querys, self.paginate_by)
+
+        page_num = request.GET.get('page', 1)
+
+        params = self.get_params(querys, search_params, page_num)
         request.session['seach_params'] = search_params
         return render(request, 'result.html', params)
 
@@ -68,19 +78,21 @@ class ResultView(ListView):
         if 'term' in search_params:
             query = query.filter(term=search_params['term'])
         if 'place' in search_params:
-            query = query.filter(term=search_params['place'])
+            query = query.filter(place=search_params['place'])
+        if 'faculty' in search_params:
+            query = query.filter(faculty=search_params['faculty'])
         if 'class_form' in search_params:
-            query = query.filter(term=search_params['class_form'])
+            query = query.filter(class_form=search_params['class_form'])
         if 'keyword' in search_params:
             query = query.filter(
                 Q(class_name__contains=search_params['keyword']) | Q(teacher__contains=search_params['keyword'])
             ).distinct()
         return query
 
-    def get_params(self, querys, search_params):        
+    def get_params(self, querys, search_params, page_num = 1):        
         params = {
-            'querys': querys,
-            'query_cnt': querys.count(),
+            'querys': querys.get_page(page_num),
+            'query_cnt': querys.count,
             'sort_form': SortForm,
             'search_conditions': [],
         }
@@ -95,6 +107,7 @@ class ResultView(ListView):
             'term',
             'day',
             'place',
+            'faculty',
             'class_form',
             'keyword'
         ]
@@ -113,6 +126,7 @@ def ClassView(request, pk):
         'comments': comments[:COMMENT_CNT],
         'form': ClassSeachForm,
     }
+    print(cl.teacher)
     if request.user.is_authenticated:
         params['checked_favorite'] = request.user.favorite_class.filter(pk=pk).exists()
     return render(request, 'class.html', params)

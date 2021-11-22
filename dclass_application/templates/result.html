@@ -31,11 +31,45 @@
                 <p>クラスがありません…</p>
             {% endfor %}
         </div>
-        {% include "_back_btn.html" %}
-        {% comment %} <div class="result_bottom">
-            <a class="back_btn"href={% url 'index' %}>戻る</a>
-        </div>  {% endcomment %}
+        <div class="pagination_w">
+            <p>{{querys.number}} / {{querys.paginator.num_pages}}</p>
+            <ul class="pagination">
+                <div class="pagination_top">
+                    <li>
+                        {% if querys.has_previous %}
+                            <div class="pagination_item">
+                                <a href="?page={{ querys.previous_page_number }}">
+                                    <i class="fas fa-angle-left fa-fw"></i>前のページ
+                                </a>
+                            </div>
+                        {% endif %}
 
+                    </li>
+                    <li>
+                        {% if querys.has_next %}
+                            <div class="pagination_item">
+                                <a href="?page={{ querys.next_page_number }}">
+                                    次のページ<i class="fas fa-angle-right fa-fw"></i>
+                                </a>
+                            </div>
+                        {% endif %}
+                    </li>
+                </div>
+                {% comment %} <div class="pagination_bot">
+                    <li class="page-item">
+                        <a href="?page=1">
+                            一番最初
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a href="?page={{ querys.paginator.num_pages }}">
+                            最後のページ
+                        </a>
+                    </li>
+                </div> {% endcomment %}
+            </ul>
+        </div>
+        {% include "_back_btn.html" %}
     </div>
 
 {% endblock main %}

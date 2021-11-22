@@ -35,3 +35,11 @@
     margin-left: auto;
     cursor: pointer;
 }
+
+.add_comment_btn {
+    background-color:var(--my-pink);
+    border: none;
+    width: 200px;
+    color: white;
+    margin-top: 20px;
+}

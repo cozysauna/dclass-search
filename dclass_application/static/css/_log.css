@@ -23,3 +23,16 @@
     width: 200px;
     height: 40px;
 }
+
+
+.login {
+    border: 1px solid var(--my-pink);
+    color: var(--my-pink);
+    background-color: white;
+}
+
+.signup {
+    border: 1px solid var(--my-blue);
+    color: var(--my-blue);
+    background-color: white;
+}

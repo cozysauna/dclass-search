@@ -12,3 +12,13 @@ class SignupUserForm(SignupForm):
         user.save()
         return user
 
+
+class DuetForm(forms.Form):
+    user_id = forms.CharField(label='ユーザーID', 
+                                max_length=100, 
+                                widget=forms.TextInput({'placeholder': 'cgxc0000', 'class': 'place_holder_center'})
+                            )
+    password = forms.CharField(label='パスワード', 
+                                widget=forms.PasswordInput({'placeholder': 'Password', 'class': 'place_holder_center'}), 
+                                max_length=100
+                            )

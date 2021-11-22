@@ -17,11 +17,12 @@
                 <li>{{ form.password1 }}</li>
                 <h4>パスワード確認</h4>
                 <li>{{ form.password2 }}</li>
-                <li class="center"><input type = 'submit' class='btn login', value="新規登録"></input></li>
+                <li class="center"><input type = 'submit' class='btn signup', value="新規登録"></input></li>
             </ul>
-            {% comment %} <button type = "submit">新規登録</button> {% endcomment %}
-
         </form>
+        <div class="center">
+            <a href={% url 'account_login' %}><input type="submit" value="ログイン", class="btn login"></a>
+        </div>
         </div>
     </div>
 {% endblock main %}

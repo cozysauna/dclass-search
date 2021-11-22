@@ -32,6 +32,7 @@ class UserManager(UserManager):
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField('mail-address', unique=True)
     favorite_class = models.ManyToManyField(Classes, blank=True)
+    duet_classes = models.CharField(max_length=100, blank=True)
     is_staff = models.BooleanField(
         ('staff status'),
         default=False,

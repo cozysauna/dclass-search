@@ -8,13 +8,17 @@ import chromedriver_binary
 from time import sleep
 
 
-options = webdriver.ChromeOptions()
-driver = webdriver.Chrome(options=options)
 
 
-open_f = open('syllabus_plane_data/General_Education/2021.txt')
-# FACULTY = 'General_Education'
-FACULTY = '一般教養'
+
+# PlaneData
+
+open_f = open('syllabus_plane_data/Social/2021.txt')
+write_f = open('final_data/Social.txt', 'a')
+FACULTY = '社会学部'
+# FACULTY = '文学部'
+# FACULTY = '神学部'
+# FACULTY = '一般教養'
 YEAR = '2021'
 data = open_f.read()
 soup = BeautifulSoup(data, 'html.parser')
@@ -23,7 +27,19 @@ tables = soup.select("table")[2].select("tr")[2:]
 
 def mold_txt(txt):
     if len(txt.select('a')) >= 1: 
-        txt = [txt.select_one('a').text[1:]]
+        txt = txt.select_one('a')
+        if txt.find('br') != None:
+            txt.br.replace_with(' ')
+            txt = txt.text.split(' ')[0][1:]
+        else:
+            txt = txt.text[1:]
+        idx = txt.find('(')
+        if idx != -1:
+            txt = txt[:idx]
+        idx = txt.find('（')
+        if idx != -1:
+            txt = txt[:idx]
+        txt = [txt]
     else:
         new_txt = str(txt.string).split('\n')
         if new_txt == ['None']:
@@ -40,19 +56,20 @@ def mold_txt(txt):
     txt = [tx.replace('\u3000', ' ') for tx in txt]
     txt = [tx for tx in txt if tx]
 
-
     if len(txt) >= 1 and '曜日' in txt[0]: 
         txt[0] = txt[0].split('曜日')
 
     if len(txt) >= 1 and '集中' in txt[0]:
         txt = [[['集中講義'], '0']]
 
+    if len(txt) >= 1 and 'インターネット' in txt[0]:
+        txt = [[['インターネット'], '0']]
 
 
     return txt
 
 def dict_to_str(dic):
-    return '?'.join(str(v) for v in dic.values())
+    return '@'.join(str(v) for v in dic.values())
 
 def str_to_dict(st):
     columns =  [
@@ -76,7 +93,7 @@ def str_to_dict(st):
         'participation_ratio',
         'credit'
     ]
-    st = st.split('?')
+    st = st.split('@')
     ret = dict()
     list_columns = ['grade_distribution', 'a_ratio_history', 'textbook', 'teacher']
     for i, column in enumerate(columns):
@@ -118,11 +135,11 @@ def get_syllabus_data(url):
             except:
                 percent = 0
             if i == 0: continue
-            if 'テスト' in txt[i-1]:
+            if 'テスト' in txt[i-1] or 'Test' in txt[i-1]:
                 test_ratio += percent
-            elif 'レポート' in txt[i-1]:
+            elif 'レポート' in txt[i-1] or 'Report' in txt[i-1]:
                 report_ratio += percent
-            elif '平常点' in txt[i-1]:
+            elif '平常点' in txt[i-1] or 'Participation' in txt[i-1]:
                 participation_ratio += percent
             else: pass
  
@@ -160,7 +177,7 @@ def get_syllabus_data(url):
 def mold_table(table, year, faculty):
     table = [mold_txt(txt) for txt in table]
     class_data = {
-        'class_name': table[2][0],
+        'class_name': table[2][0].translate(str.maketrans({chr(0xFF01 + i): chr(0x21 + i) for i in range(94)})),
         # ratio a, b, c, d, f, o
         'grade_distribution':[-1, -1, -1, -1, -1, -1],
         'average_evaluation': -1,
@@ -196,13 +213,19 @@ def mold_table(table, year, faculty):
 URL = 'https://duet.doshisha.ac.jp/kokai/html/fi/fi020/FI02001G.html'
 
 
-write_f = open('final_data/General_Education.txt', 'w')
-for table in tables[:10]:
+options = webdriver.ChromeOptions()
+driver = webdriver.Chrome(options=options)
+
+
+DATA_NUM = 0
+log = DATA_NUM
+for table in tables[DATA_NUM:10]:
+    log += 1
     table = table.select("td")
     class_data = mold_table(table, year=YEAR, faculty=FACULTY)
     code = class_data['code']
 
-    # for i in range(3):
+
     for i in range(2, -1, -1):
         driver.get(URL)
         sleep(1)
@@ -213,14 +236,19 @@ for table in tables[:10]:
         select.select_by_value(str(2020-i))
 
         # code
-        code_forward = code[:code.index('-')]
-        code_back = code[code.index('-')+1:]
-        code_f = driver.find_element(by=By.NAME, value='form1:_id90')
-        code_f.send_keys(code_forward)
+        if '-' in code:
+            code_forward = code[:code.index('-')]
+            code_back = code[code.index('-')+1:]
+            code_f = driver.find_element(by=By.NAME, value='form1:_id90')
+            code_f.send_keys(code_forward)
 
 
-        code_b = driver.find_element(by=By.NAME, value='form1:_id92')
-        code_b.send_keys(code_back)
+            code_b = driver.find_element(by=By.NAME, value='form1:_id92')
+            code_b.send_keys(code_back)
+        else:
+            code_forward = code
+            code_f = driver.find_element(by=By.NAME, value='form1:_id90')
+            code_f.send_keys(code_forward)
 
         #検索ボタン
         search_btn = driver.find_element(by=By.ID, value='form1:enterDodoZikko')
@@ -252,13 +280,12 @@ for table in tables[:10]:
         f_ratio = f_ratio if f_ratio else -1
         o_ratio = o_ratio if o_ratio else -1
 
-        class_data['class_name'] = txts_by_td[2].get_attribute('innerHTML')
         if i == 0:
             class_data['grade_distribution'] = [a_ratio, b_ratio, c_ratio, d_ratio, f_ratio, o_ratio]
             class_data['average_evaluation'] = txts_by_td[11].get_attribute('innerHTML')
+            if not class_data['average_evaluation']: class_data['average_evaluation'] = -1
 
         class_data['a_ratio_history'][i] = a_ratio
 
     class_data = dict_to_str(class_data)
     write_f.write(class_data + '\n')
-    # print(class_data)

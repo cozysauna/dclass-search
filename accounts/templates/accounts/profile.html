@@ -42,8 +42,58 @@
         </div>
         {% include "_back_btn.html" %}
     </div>
+    {% if user.is_authenticated %}
+        <div class="wrapper">
+            <h1>
+            Duet連携
+            {% if user.duet_classes != '' %}
+            <span class='emphasize'>(済み)</span>
+            {% endif %}
+            </h1>
+            <div>
+                {% if user.duet_classes == '' %}
+                    Duetと連携されていません
+                {% else %}
+                    <table class='duet_table'>
+                    <tr>
+                        <th></th>
+                        <th>月</th>
+                        <th>火</th>
+                        <th>水</th>
+                        <th>木</th>
+                        <th>金</th>
+                        <th>土</th>
+                    </tr>
+                    {% for class_time in class_table %}
+                        <tr>
+                            <td>{{forloop.counter}}</td>
+                        {% for cl in class_time %}
+                            <td>
+                                {{ cl | truncatechars:20 }}
+                            </td>
+                        {% endfor %}
+                        </tr>
+                    {% endfor %}
+                    {% comment %} {{user.duet_classes}} {% endcomment %}
+                    </table>
+                {% endif %}
+            </div>
+            <div class="duet_form">
+                <form action="{% url 'duet' user.id %}" method = "post"> 
+                    {% comment %} <h1>連携</h1> {% endcomment %}
+                    {% csrf_token %}
+                    <ul>
+                        <h4>ユーザーID</h4>
+                        <li>{{ form.user_id }}</li>
+                        <h4>パスワード</h4>
+                        <li>{{ form.password }}</li>
+                    </ul>
+                    <div class="center"><input type="submit" value="連携", class="btn duet_btn"></div>
 
-
+                </form>
+            </div>
+        </div>
+    {% endif %}
 
 
 {% endblock main %}

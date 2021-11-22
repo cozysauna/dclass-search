@@ -14,34 +14,49 @@
                 <div class = 'search_with_terms'>
                     <p class="how_to_search"><i class="fas fa-search fa-fw"></i>条件から探す</p>
                     <div class="radio_wrap">
+                        <div class="radio_wrap_name"><i class="fas fa-cloud-sun-rain fa-fw"></i>学期</div>
                         {% for radio in form.term %}
                             {{ radio.tag }}
                             <label for="id_term_{{ forloop.counter0 }}">{{ radio.choice_label }}</label>
                         {% endfor %}
                     </div>
                     <div class="radio_wrap">
-                        {% for radio in form.day %}
-                            {{ radio.tag }}
-                            <label for="id_day_{{ forloop.counter0 }}">{{ radio.choice_label }}</label>
-                        {% endfor %}
-                    </div>
-                    <div class="radio_wrap">
-                        {% for radio in form.time %}
-                            {{ radio.tag }}
-                            <label for="id_time_{{ forloop.counter0 }}">{{ radio.choice_label }}</label>
-                        {% endfor %}
-                    </div>
-                    <div class="radio_wrap">
+                        <div class="radio_wrap_name"><i class="fas fa-map-marker-alt fa-fw"></i>場所</div>
                         {% for radio in form.place %}
                             {{ radio.tag }}
                             <label for="id_place_{{ forloop.counter0 }}">{{ radio.choice_label }}</label>
                         {% endfor %}
                     </div>
                     <div class="radio_wrap">
+                        <div class="radio_wrap_name"><i class="fas fa-school"></i>形態</div>
                         {% for radio in form.class_form %}
                             {{ radio.tag }}
                             <label for="id_class_form_{{ forloop.counter0 }}">{{ radio.choice_label }}</label>
                         {% endfor %}
+                    </div>
+                    <div class="radio_wrap">
+                        <div class="radio_wrap_half">
+                            <i class="fas fa-graduation-cap fa-fw"></i>
+                            {{ form.faculty.label }}
+                            {{ form.faculty }}
+                        </div>
+                        <div class="radio_wrap_half">
+                            <i class="fas fa-sun"></i>
+                            {{ form.day.label }}
+                            {{ form.day }}
+                        </div>
+                        {% comment %} {% for radio in form.day %}
+                            {{ radio.tag }}
+                            <label for="id_day_{{ forloop.counter0 }}">{{ radio.choice_label }}</label>
+                        {% endfor %} {% endcomment %}
+                    </div>
+                    <div class="radio_wrap">
+                        {% comment %} {{ form.faculty.label }}
+                        {{ form.faculty }} {% endcomment %}
+                        {% comment %} {% for radio in form.faculty %}
+                            {{ radio.tag }}
+                            <label for="id_day_{{ forloop.counter0 }}">{{ radio.choice_label }}</label>
+                        {% endfor %} {% endcomment %}
                     </div>
                 </div>
                 <div class="search_with_keyword">

@@ -1,6 +1,5 @@
 .search_with_terms {
-    margin-bottom: 10px;
-
+    /* margin-bottom: 10px; */
 }
 .search_with_keyword {
     margin-bottom: 10px;
@@ -34,7 +33,50 @@
 }
 
 .search_btn {
-    background-color: #F06B6B;
+    background-color: var(--my-pink);
+    border: none;
+    color: white;
     width: 300px;
     margin-top: 15px;
+    height: 10px;
+    line-height: 10px;
+    font-size: 18px;
+    padding: 10px 20px;
+}
+
+
+.radio_wrap {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.radio_wrap label{
+    box-sizing: border-box;
+    display: inline-block;
+    border: 1px solid var(--my-gray);
+    height: 50px;
+    width: 100%;
+    line-height: 50px;
+}
+
+.radio_wrap_name {
+    width: 20%;
+    /* background-color: violet; */
+    text-align: center;
+    height: 50px;
+    line-height: 50px;
+}
+
+.radio_wrap_half {
+    width: 50%;
+}
+
+.radio_wrap_half select {
+    width: 80%;
+    text-align: center;
+    height: 45px;
 }
