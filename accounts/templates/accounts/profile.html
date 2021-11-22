@@ -49,11 +49,12 @@
             {% if user.duet_classes != '' %}
             <span class='emphasize'>(済み)</span>
             {% endif %}
+            {% if failed %}
+            <span class='emphasize'>{{failed}}</span>
+            {% endif %}
             </h1>
             <div>
-                {% if user.duet_classes == '' %}
-                    Duetと連携されていません
-                {% else %}
+                {% if user.duet_classes != '' %}
                     <table class='duet_table'>
                     <tr>
                         <th></th>
@@ -80,7 +81,6 @@
             </div>
             <div class="duet_form">
                 <form action="{% url 'duet' user.id %}" method = "post"> 
-                    {% comment %} <h1>連携</h1> {% endcomment %}
                     {% csrf_token %}
                     <ul>
                         <h4>ユーザーID</h4>

@@ -9,8 +9,13 @@
 <div class="wrapper">
     <div class="log_form">
         <form method = 'post'>
-            <h1>ログイン</h1>
             {% csrf_token %}
+            <h1>ログイン</h1>
+            {% for field, errors in form.errors.items %}
+                {% for error in errors %}
+                <p class="emphasize">{{ error }}</p>
+                {% endfor %}
+            {% endfor %}
             <ul>
                 <h4>メールアドレス</h4>
                 <li>{{ form.login }}</li>
