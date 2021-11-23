@@ -65,11 +65,20 @@ class Classes(models.Model):
     credit = models.IntegerField(default=0)
 
     def get_short_faculty(self):
-        if self.faculty == 'グローバル・コミュニケーション': return 'グロコミ'
+        if self.faculty == 'グローバル・コミュニケーション学部': return 'グロコミ'
+        if self.faculty == 'グローバル地域文化学部': return 'グロ地域'
         return self.faculty
 
-    def get_round_a_ratio(self):
-        return int(self.a_ratio)
+    def get_modified_a_ratio(self):
+        if self.a_ratio == -1: return '不明'
+        return str(int(self.a_ratio))+'%'
+    
+    def get_modified_average_evaluation(self):
+        if self.average_evaluation == -1.0: return '不明'
+        return self.average_evaluation
+
+    def get_teachers(self):
+        return self.teacher.split('@')
 
     def __str__(self):
         return self.class_name +':'+ str(self.year)+':'+str(self.code)

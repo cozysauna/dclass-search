@@ -13,16 +13,23 @@ from time import sleep
 
 # PlaneData
 
-open_f = open('syllabus_plane_data/Policy/2021.txt')
-write_f = open('final_data/Policy.txt', 'a')
-FACULTY = '政策学部'
+open_f = open('syllabus_plane_data/General_Education/2021.txt')
+write_f = open('final_data/General_Education.txt', 'a')
+# FACULTY = 'グローバル地域文化学部'
+# FACULTY = 'グローバル・コミュニケーション学部'
+# FACULTY = '心理学部'
+# FACULTY = 'スポーツ健康科学部'
+# FACULTY = '生命医科学部'
+# FACULTY = '理工学部'
+# FACULTY = '文化情報学部'
+# FACULTY = '政策学部'
 # FACULTY = '商学部'
 # FACULTY = '経済学部'
 # FACULTY = '法学部'
 # FACULTY = '社会学部'
 # FACULTY = '文学部'
 # FACULTY = '神学部'
-# FACULTY = '一般教養'
+FACULTY = '一般教養'
 YEAR = '2021'
 data = open_f.read()
 soup = BeautifulSoup(data, 'html.parser')

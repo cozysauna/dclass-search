@@ -10,8 +10,11 @@
 {% block main %}
 <div class="wrapper">
     <div class="class_title">
-        <h1>{{ cl.class_name}}<span class='teacher_span'>{{cl.teacher}}</span></h1>
-        {% comment %} <p>{{ cl.teacher }}先生</p> {% endcomment %}
+        <h1>{{ cl.class_name}}
+        {% for teacher in cl.get_teachers %}
+            <span class='teacher_span'>{{teacher}}</span>
+        {% endfor %}
+        </h1>
         <div class="share">
             <div class="share_left">
             </div>
@@ -39,9 +42,7 @@
                     <td>{{ cl.year }}年</td>
                 </tr>
                 <tr>
-                    <th>先生</th>
-                    {% comment %} <td>{{ cl.teacher }}</td> {% endcomment %}
-                    {% comment %} <td><a href={% url 'result' %}>{{ cl.teacher }}</a></td> {% endcomment %}
+                    <th>先生</th>         
                     <td class="teacher">
                         <p class="teacher_link">{{ cl.teacher }}</p>
                         <form action="{% url 'result' %}" method = "post" name="{{cl.teacher}}" class="teacher_search">

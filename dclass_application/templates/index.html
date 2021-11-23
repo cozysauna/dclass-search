@@ -8,7 +8,24 @@
 
 {% block main %}
     <div class="wrapper">
-        <h1 class="title heading">授業を探す</h1>
+        <h1 class="title heading">同志社大学授業検索サーチ<i class="fas fa-check-circle fa-fw my-green"></i></h1>
+        <ul class="feature">
+            <li>
+                <h3>簡単授業検索</h3>
+                <p>過去3年間のA率、評定平均、基礎情報を簡単にチェック！</p>
+            </li>
+            <li>
+                <h3>Duetと連携</h3>
+                <p>履修中の授業の評価・コメントを確認できます</p>
+            </li>
+            <li>
+                <h3>お気に入り機能</h3>
+                <p>気に入った授業をお気に入り登録することができます</p>
+            </li>
+        </ul>
+    </div>
+    <div class="wrapper">
+        <h1 class="title heading">授業を探す<i class="fas fa-check-circle fa-fw my-green"></i></h1>
             <form action="{% url 'result' %}" method = "post" class="search_form">
                 {% csrf_token %}
                 <div class = 'search_with_terms'>
@@ -75,7 +92,7 @@
     </div>
 
     <div class="wrapper">
-        <h1>おすすめ授業</h1>
+        <h1>おすすめ授業<i class="fas fa-check-circle fa-fw my-green"></i></h1>
         <div class="class_w">
             {% for cl in recommend_data %}
                 {% include "_class_list.html" %}
@@ -86,7 +103,7 @@
     </div>
 
     <div class="wrapper">
-        <h1>最近のコメント</h1>
+        <h1>最近のコメント<i class="fas fa-check-circle fa-fw my-green"></i></h1>
         <div class="comment_w">
             {% for comment in recent_comments %}
                 {% include "_comment_list.html" %}

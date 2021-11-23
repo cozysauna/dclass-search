@@ -24,6 +24,7 @@ li {
     --my-light-blue: rgba(40, 213, 243, 0.972);
     --my-pink: #F06B6B;
     --my-star: #F8C601;
+    --my-green: #28A745;
 }
 
 .my-blue {
@@ -36,6 +37,10 @@ li {
 
 .my-pink {
     color: var(--my-pink);
+}
+
+.my-green {
+    color: var(--my-green);
 }
 
 .star {
