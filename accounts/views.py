@@ -123,16 +123,6 @@ def DuetView(request, uspk):
 
         return redirect('profile')
 
-def get_class_table(data):
-    # data must_be 7 times 6
-    class_table = [[''] * 6 for _ in range(7)]
-    if not data: return class_table
-    data = data.split('@')
-    # To do 
-    for i in range(6 * 7):
-        class_table[i//6][i%6] = data[i]
-    return class_table
-
 def get_registration_data(season):
     registration_data = [[None] * 6 for _ in range(7) ]
     for class_time in range(1, 8):
