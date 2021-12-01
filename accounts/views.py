@@ -68,6 +68,7 @@ def DuetView(request, uspk):
             URL = "https://duet.doshisha.ac.jp/gakusei/html/fb/fb010/FB01001G.html"
             session = requests.session()
             session.get(URL)
+            sleep(1)
 
             login_info = {
                 "member:loginId": USER_ID,
@@ -78,8 +79,7 @@ def DuetView(request, uspk):
 
             res = session.post(URL, data=login_info)
             res.raise_for_status()
-
-            sleep(0.5)
+            sleep(1)
             # 登録科目一覧へ
             subject_url = "https://duet.doshisha.ac.jp/gakusei/html/fb/fb020/FB02001G.html"
             subject_info = {
@@ -88,6 +88,7 @@ def DuetView(request, uspk):
             }
 
             subject_text = session.post(subject_url, subject_info)
+            sleep(1)
 
             # 時間割表へ
             subject_bs = BeautifulSoup(subject_text.text, 'html.parser')
@@ -109,7 +110,8 @@ def DuetView(request, uspk):
             winter = get_registration_data(winter)
             user.duet_classes = spring 
             user.save()
-        except:
+        except Exception as e:
+            print(e)
             user = CustomUser.objects.get(id=request.user.id)
             mycomment = Comment.objects.filter(user=user)
             params = {
