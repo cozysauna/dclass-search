@@ -111,7 +111,6 @@ def DuetView(request, uspk):
             user.duet_classes = spring 
             user.save()
         except Exception as e:
-            print(e)
             user = CustomUser.objects.get(id=request.user.id)
             mycomment = Comment.objects.filter(user=user)
             params = {
@@ -119,7 +118,8 @@ def DuetView(request, uspk):
                 'mycomments': mycomment,
                 'form': DuetForm,
                 'class_table': [[''] * 6 for _ in range(7)],
-                'failed': 'LOGIN_ID、またはPASSWORDが違います'
+                'failed': 'LOGIN_ID、またはPASSWORDが違います',
+                'log': e
             }
             return render(request, 'accounts/profile.html', params)
 

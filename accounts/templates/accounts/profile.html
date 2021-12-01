@@ -52,6 +52,9 @@
             {% if failed %}
             <span class='emphasize'>{{failed}}</span>
             {% endif %}
+            {% if log %}
+            <span class='log hide'>{{log}}</span>
+            {% endif %}
             </h1>
             <div>
                 {% if user.duet_classes != '' %}
@@ -103,6 +106,9 @@
 <script>
     'use strict'
     $(document).ready(function(){
+        console.log('-- Log --')
+        const log_mes = $('.log').text()
+        console.log(log_mes)
     });
 </script>
 {% endblock javascript %}
