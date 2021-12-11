@@ -44,8 +44,6 @@
 
 .evaluation_ratio {
     width: 100%;
-    /* border: 1px solid var(--my-gray); */
-    /* border-radius: 5px; */
     box-sizing: border-box;
     margin-bottom: 20px;
 }
@@ -141,8 +139,6 @@
 
 
 .class_a_average_evaluation {
-    /* background-color:#898989;  */
-    /* color: white; */
     width: 48%;
     box-sizing: border-box;
     padding: 1px 12px;
@@ -150,7 +146,6 @@
     border-radius: 10px;
     border: 1px solid var(--my-gray);
     color: black;
-    /* font-weight: bold; */
     text-align: center;
 }
 
@@ -159,4 +154,21 @@
     font-weight: bold;
 }
 
+@media screen and (max-width: 767px) {
+    .class_result {
+        width: calc(calc(100% - 40px)/2);
+    }
+    .class_show_left {
+        width: 100%;
+    }
+    
+    .class_show_right {
+        width: 100%;
+    }
+}
 
+@media screen and (max-width: 600px) {
+    .class_result {
+        width: calc(100% - 10px);
+    }
+}

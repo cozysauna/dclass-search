@@ -13,8 +13,8 @@ from time import sleep
 
 # PlaneData
 
-open_f = open('syllabus_plane_data/General_Education/2021.txt')
-write_f = open('final_data/General_Education.txt', 'a')
+open_f = open('syllabus_plane_data/Theology/2021.txt')
+write_f = open('final_data/Theology.txt', 'a')
 # FACULTY = 'グローバル地域文化学部'
 # FACULTY = 'グローバル・コミュニケーション学部'
 # FACULTY = '心理学部'
@@ -28,8 +28,8 @@ write_f = open('final_data/General_Education.txt', 'a')
 # FACULTY = '法学部'
 # FACULTY = '社会学部'
 # FACULTY = '文学部'
-# FACULTY = '神学部'
-FACULTY = '一般教養'
+FACULTY = '神学部'
+# FACULTY = '一般教養'
 YEAR = '2021'
 data = open_f.read()
 soup = BeautifulSoup(data, 'html.parser')
@@ -230,11 +230,12 @@ driver = webdriver.Chrome(options=options)
 
 DATA_NUM = 0
 log = DATA_NUM
-for table in tables[DATA_NUM:10]:
+for table in tables[DATA_NUM:]:
     log += 1
     table = table.select("td")
     class_data = mold_table(table, year=YEAR, faculty=FACULTY)
     code = class_data['code']
+    print(log)
 
 
     for i in range(2, -1, -1):

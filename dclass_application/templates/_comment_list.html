@@ -2,8 +2,7 @@
     <a href="{% url 'class' comment.cl.id %}">
         <div class="comment_result_content">
             <h2>
-            {{comment.cl.class_name}}
-            {% comment %} <span class='teacher_name'>{{ comment.cl.teacher }}先生</span>   {% endcomment %}
+            {{comment.cl.class_name | truncatechars:10}}
             </h2>
             <span class="star">{{comment.get_star}}</span><span class="my-gray">{{comment.get_left_star}}</span>
             <p>{{comment.text | truncatechars:40}}</p>

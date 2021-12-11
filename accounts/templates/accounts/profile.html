@@ -27,7 +27,7 @@
                     <div class="class_result">
                         <div class="comment_result_content">
                             <h2>
-                                {{comment.cl.class_name}}
+                                {{comment.cl.class_name | truncatechars:10}}
                                 <a class="remove_comment" href={% url 'remove_comment'　comment.id %}>コメント解除</a>
                             </h2>
                             
