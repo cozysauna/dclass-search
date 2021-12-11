@@ -1,7 +1,8 @@
 
 .a_chart {
     margin: 0 auto;
-    width: 400px;
+    /* width: 400px; */
+    width: 100%;
 }
 
 
@@ -15,23 +16,12 @@
 
 .amazon {
     background-color: orange;
-    /* border: 1px solid black; */
     color: white;
     padding: 5px 10px;
     border-radius: 3px;
-    /* color: orange; */
 }
 
-/* .share_btn {
-    height: 20px;
-    border: 1px solid var(--my-gray);
-    border-radius: 3px;
-    padding: 10px 15px;
-    font-size: 13px;
-} */
 .favorite {
-    /* background-color: orange; */
-    /* color: white; */
     color: var(--my-blue);
     border: 1px solid var(--my-blue);
     box-sizing: border-box;

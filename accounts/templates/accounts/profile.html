@@ -75,7 +75,6 @@
                         {% endfor %}
                         </tr>
                     {% endfor %}
-                    {% comment %} {{user.duet_classes}} {% endcomment %}
                     </table>
                 {% endif %}
             </div>
@@ -89,7 +88,6 @@
                         <li>{{ form.password }}</li>
                     </ul>
                     <div class="center"><input type="submit" value="連携", class="btn duet_btn"></div>
-
                 </form>
             </div>
         </div>
@@ -97,15 +95,3 @@
 
 
 {% endblock main %}
-
-
-{% block javascript %}
-<script>
-    'use strict'
-    $(document).ready(function(){
-        console.log('-- Log --')
-        const log_mes = $('.log').text()
-        console.log(log_mes)
-    });
-</script>
-{% endblock javascript %}
