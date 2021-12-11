@@ -46,9 +46,9 @@
         <div class="wrapper">
             <h1>
             Duet連携
-            {% if user.duet_classes != '' %}
+            {% comment %} {% if user.duet_classes != '' %}
             <span class='emphasize'>(済み)</span>
-            {% endif %}
+            {% endif %} {% endcomment %}
             {% if failed %}
             <span class='emphasize'>{{failed}}</span>
             {% endif %}

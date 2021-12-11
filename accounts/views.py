@@ -22,14 +22,15 @@ class ProfileView(LoginRequiredMixin ,TemplateView):
             'user': user,
             'mycomments': mycomment,
             'form': DuetForm,
-            'class_table': self.get_class_table(user.duet_classes)
+            'class_table': self.get_class_table(request)
         }
         return render(request, 'accounts/profile.html', params)
 
-    def get_class_table(self, data):
+    def get_class_table(self, request):
         # data must_be 7 times 6
-        class_table = [['None'] * 6 for _ in range(7)]
-        if not data: return class_table
+        class_table = [[''] * 6 for _ in range(7)]
+        if 'duet_classes' not in request.session: return class_table
+        data = request.session['duet_classes']
         data = data.split('@')
         # To do 
         for i in range(6 * 7):
@@ -63,65 +64,64 @@ def DuetView(request, uspk):
         USER_ID = request.POST['user_id']
         PASSWORD = request.POST['password']
 
-        try:
-            #DUET URL
-            URL = "https://duet.doshisha.ac.jp/gakusei/html/fb/fb010/FB01001G.html"
-            session = requests.session()
-            session.get(URL)
-            sleep(1)
+        with requests.session() as ses:
+            try:
+                #DUET URL
+                URL = "https://duet.doshisha.ac.jp/gakusei/html/fb/fb010/FB01001G.html"
+                # session = requests.session()
+                ses.get(URL)
+                sleep(1)
 
-            login_info = {
-                "member:loginId": USER_ID,
-                "member:password": PASSWORD,
-                "member/html/fb/fb010/FB01001G.html": "member",
-                "member:__link_clicked__": "member:doLogin"
-            }
+                login_info = {
+                    "member:loginId": USER_ID,
+                    "member:password": PASSWORD,
+                    "member/html/fb/fb010/FB01001G.html": "member",
+                    "member:__link_clicked__": "member:doLogin"
+                }
 
-            res = session.post(URL, data=login_info)
-            res.raise_for_status()
-            sleep(1)
-            # 登録科目一覧へ
-            subject_url = "https://duet.doshisha.ac.jp/gakusei/html/fb/fb020/FB02001G.html"
-            subject_info = {
-                "menuform/html/fb/fb020/FB02001G.html": "menuform",
-                "menuform:__link_clicked__": "menuform:goFb17001g"
-            }
+                res = ses.post(URL, data=login_info)
+                res.raise_for_status()
+                sleep(1)
+                # 登録科目一覧へ
+                subject_url = "https://duet.doshisha.ac.jp/gakusei/html/fb/fb020/FB02001G.html"
+                subject_info = {
+                    "menuform/html/fb/fb020/FB02001G.html": "menuform",
+                    "menuform:__link_clicked__": "menuform:goFb17001g"
+                }
 
-            subject_text = session.post(subject_url, subject_info)
-            sleep(1)
+                subject_text = ses.post(subject_url, subject_info)
+                sleep(1)
 
-            # 時間割表へ
-            subject_bs = BeautifulSoup(subject_text.text, 'html.parser')
-            token = subject_bs.find(attrs={'name':'form1:token'}).get('value')
+                # 時間割表へ
+                subject_bs = BeautifulSoup(subject_text.text, 'html.parser')
+                token = subject_bs.find(attrs={'name':'form1:token'}).get('value')
 
-            time_table_url = "https://duet.doshisha.ac.jp/gakusei/html/fb/fb170/FB17001G.html"
-            time_table_info = {
-                "form1:token": token,
-                "form1:selectedIndex": "",
-                "form1:topPosition": "0",
-                "form1/html/fb/fb170/FB17001G.html": "form1",
-                "form1:__link_clicked__": "form1:goZikanwarihyo"
-            }
-            class_text = session.post(time_table_url, time_table_info)
-            class_data = BeautifulSoup(class_text.content, 'html.parser')
-            spring = class_data.find(id="form1:kikan1").select_one("table").select("tr")
-            winter = class_data.find(id="form1:kikan2").select_one("table").select("tr")
-            spring = get_registration_data(spring)
-            winter = get_registration_data(winter)
-            user.duet_classes = spring 
-            user.save()
-        except Exception as e:
-            user = CustomUser.objects.get(id=request.user.id)
-            mycomment = Comment.objects.filter(user=user)
-            params = {
-                'user': user,
-                'mycomments': mycomment,
-                'form': DuetForm,
-                'class_table': [[''] * 6 for _ in range(7)],
-                'failed': 'LOGIN_ID、またはPASSWORDが違います',
-                'log': e
-            }
-            return render(request, 'accounts/profile.html', params)
+                time_table_url = "https://duet.doshisha.ac.jp/gakusei/html/fb/fb170/FB17001G.html"
+                time_table_info = {
+                    "form1:token": token,
+                    "form1:selectedIndex": "",
+                    "form1:topPosition": "0",
+                    "form1/html/fb/fb170/FB17001G.html": "form1",
+                    "form1:__link_clicked__": "form1:goZikanwarihyo"
+                }
+                class_text = ses.post(time_table_url, time_table_info)
+                class_data = BeautifulSoup(class_text.content, 'html.parser')
+                spring = class_data.find(id="form1:kikan1").select_one("table").select("tr")
+                winter = class_data.find(id="form1:kikan2").select_one("table").select("tr")
+                spring = get_registration_data(spring)
+                winter = get_registration_data(winter)
+                request.session['duet_classes'] = spring
+            except:
+                user = CustomUser.objects.get(id=request.user.id)
+                mycomment = Comment.objects.filter(user=user)
+                params = {
+                    'user': user,
+                    'mycomments': mycomment,
+                    'form': DuetForm,
+                    'class_table': [[''] * 6 for _ in range(7)],
+                    'failed': 'LOGIN_ID、またはPASSWORDが違います',
+                }
+                return render(request, 'accounts/profile.html', params)
 
         return redirect('profile')
 

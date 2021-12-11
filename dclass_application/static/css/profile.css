@@ -43,6 +43,7 @@
     height: 100px;
     text-align: center;
     box-sizing: border-box;
+    width: 100px;
 }
 
 .duet_table th {

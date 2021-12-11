@@ -3,8 +3,13 @@
     display: flex;
 }
 
-.header_right li {
-    padding: 0px 10px;
+header {
+    padding: 18px 15px;
+    font-size: 22px;
+}
+
+header li {
+    padding: 0 10px;
     box-sizing: border-box;
 }
 
