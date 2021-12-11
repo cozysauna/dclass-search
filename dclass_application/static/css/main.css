@@ -120,53 +120,19 @@ html {
     transition: box-shadow .2s;
 }
 
-
-
-/* 
-.title {
-    display: flex;
-    flex-wrap: wrap;
-    height: 45px;
-    line-height: 45px;
-} */
-/* 
-.title_right {
-    margin-left: auto;
-}
-
-
-.title > h1 {
-    font-size: 20px;
-}
-
-.title > p {
-    font-size: 14px;
-}
-
-.title span {
-    color: #EF170D;
-} */
-
-
 .heading {
     border-bottom: 1px solid var(--my-gray);
 }
-
-
 
 .class_title {
     width: 100%;
     /* margin-bottom: 40px; */
 }
 
-
-
 .bold {
     font-weight: bold;
     width: 130px;
 }
-
-
 
 .btn {
     height: 40px;
@@ -176,9 +142,7 @@ html {
 
 .back_btn_w a{
     width: 200px;
-    /* background-color: var(--my-pink); */
     padding: 10px 20px;
-    /* color: white; */
     color: var(--my-pink);
     border: 1px solid var(--my-pink);
     box-sizing: border-box;
@@ -210,8 +174,6 @@ html {
     margin: 0 0 0 auto;
 }
 
-
-
 .share_btn {
     height: 20px;
     border: 1px solid var(--my-gray);
@@ -219,9 +181,6 @@ html {
     padding: 10px 15px;
     font-size: 13px;
 }
-
-
-
 
 .center {
     text-align: center;
@@ -231,7 +190,6 @@ html {
     margin: 0 auto;
     width: 50%;
 }
-
 
 .keyword {
     width: 80%;
@@ -254,13 +212,6 @@ input[type='radio'] {
     padding: 10px;
     box-sizing: border-box;
 }
-
-
-
-
-
-
-
 
 .teacher_name {
     font-size: 12px;

@@ -5,11 +5,11 @@
         </div>
         <div class="header_right">
             {% if user.is_authenticated %}
-                <li><a href={% url 'profile' %}>プロフィール</a></li>
-                <li><a href={% url 'account_logout' %}>ログアウト</a></li>
+                <li><a href={% url 'profile' %}>Profile</a></li>
+                <li><a href={% url 'account_logout' %}>Logout</a></li>
             {% else %}
-                <li><a href={% url 'account_login' %}>ログイン</a>        
-                <li><a href={% url 'account_signup' %}>新規登録</a></li>
+                <li><a href={% url 'account_login' %}>Login</a>        
+                <li><a href={% url 'account_signup' %}>SignUp</a></li>
             {% endif %} 
         </div>
     </ul>

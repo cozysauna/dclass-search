@@ -126,7 +126,6 @@ def ClassView(request, pk):
         'comments': comments[:COMMENT_CNT],
         'form': ClassSeachForm,
     }
-    print(cl.teacher)
     if request.user.is_authenticated:
         params['checked_favorite'] = request.user.favorite_class.filter(pk=pk).exists()
     return render(request, 'class.html', params)

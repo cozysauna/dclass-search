@@ -12,7 +12,7 @@
     <div class="class_title">
         <h1>{{ cl.class_name}}
         {% for teacher in cl.get_teachers %}
-            <span class='teacher_span'>{{teacher}}</span>
+            <span class='teacher_span'>{{teacher | truncatechars:20}}</span>
         {% endfor %}
         </h1>
         <div class="share">
@@ -28,7 +28,7 @@
                 {% else %}
                     <a href={% url 'account_login' %} class="favorite">お気に入り</a>
                 {% endif %}
-                {% comment %} <a href={% url 'good' cl.id %} class="good"><i class="fas fa-check fa-fw"></i>いいね{{cl.favorite}}</a> {% endcomment %}
+
                 <a class="good" name="{{cl.id}}"><i class="fas fa-check fa-fw"></i>いいね<span class="good_cnt">{{cl.favorite}}</span></a>
             </div>
         </div>
@@ -83,13 +83,11 @@
                 <tr>
                     <th>シラバス</th>
                     <td><a href="{{cl.syllabus_link}}" target="blank" class="syllabus">シラバス</a></td>
-                    {% comment %} <td>{{cl.syllabus_link}}</td> {% endcomment %}
                 </tr>
                 <tr>
                     <th>教科書</th>           
                     <td>
                         <div>{{cl.textbook}}</div>
-                        {% comment %} <div><a target= 'blank' class = "amazon" href="https://www.amazon.co.jp/%E3%81%BA%E3%82%93%E3%81%A6%E3%82%8B-%E3%82%B7%E3%83%A3%E3%83%BC%E3%83%97%E3%83%9A%E3%83%B3-%E3%82%B0%E3%83%A9%E3%83%95%E3%82%AE%E3%82%A21000-PG1013-0-3mm/dp/B0013NE3PQ/ref=zg_bs_89413051_1?_encoding=UTF8&refRID=YXMV3GT0TE9JNASPGGNR&th=1">Amazonでチェック</a></div> {% endcomment %}
                     </td>
                 </tr>
             </table>
@@ -121,7 +119,7 @@
             </div>
             <div class="evaluation_ratio">
                 <table>
-                    <caption>前年度 評定平均 {{cl.average_evaluation}}</caption>
+                    <caption>前年度 評定平均 {{cl.get_modified_average_evaluation}}</caption>
                     <tr>
                         <th>A</th>
                         <th>B</th>
@@ -131,12 +129,15 @@
                         <th>O</th>
                     </tr>
                     <tr>
-                        <td>{{cl.a_ratio}}</td>
+                        {% for ratio in cl.get_a_ratios %}
+                            <td>{{ratio}}</td>
+                        {% endfor %}
+                        {% comment %} <td>{{cl.a_ratio}}</td>
                         <td>{{cl.b_ratio}}</td>
                         <td>{{cl.c_ratio}}</td>
                         <td>{{cl.d_ratio}}</td>
                         <td>{{cl.f_ratio}}</td>
-                        <td>{{cl.o_ratio}}</td>
+                        <td>{{cl.o_ratio}}</td> {% endcomment %}
                     </tr>
                 </table>
             </div>

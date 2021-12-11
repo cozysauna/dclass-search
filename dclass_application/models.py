@@ -72,6 +72,11 @@ class Classes(models.Model):
     def get_modified_a_ratio(self):
         if self.a_ratio == -1: return '不明'
         return str(int(self.a_ratio))+'%'
+
+    def get_a_ratios(self):
+        a_ratios = [self.a_ratio, self.b_ratio, self.c_ratio, self.d_ratio, self.f_ratio, self.o_ratio]
+        a_ratios = [a_ratio if a_ratio != -1 else '不明' for a_ratio in a_ratios]
+        return a_ratios
     
     def get_modified_average_evaluation(self):
         if self.average_evaluation == -1.0: return '不明'
