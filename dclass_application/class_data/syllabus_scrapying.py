@@ -13,8 +13,8 @@ from time import sleep
 
 # PlaneData
 
-open_f = open('syllabus_plane_data/Theology/2021.txt')
-write_f = open('final_data/Theology.txt', 'a')
+open_f = open('syllabus_plane_data/Social/2021.txt')
+write_f = open('final_data/Social.txt', 'a')
 # FACULTY = 'グローバル地域文化学部'
 # FACULTY = 'グローバル・コミュニケーション学部'
 # FACULTY = '心理学部'
@@ -26,9 +26,9 @@ write_f = open('final_data/Theology.txt', 'a')
 # FACULTY = '商学部'
 # FACULTY = '経済学部'
 # FACULTY = '法学部'
-# FACULTY = '社会学部'
+FACULTY = '社会学部'
 # FACULTY = '文学部'
-FACULTY = '神学部'
+# FACULTY = '神学部'
 # FACULTY = '一般教養'
 YEAR = '2021'
 data = open_f.read()
@@ -228,9 +228,10 @@ options = webdriver.ChromeOptions()
 driver = webdriver.Chrome(options=options)
 
 
-DATA_NUM = 0
+DATA_NUM = 10
 log = DATA_NUM
-for table in tables[DATA_NUM:]:
+END = 100
+for table in tables[DATA_NUM:END]:
     log += 1
     table = table.select("td")
     class_data = mold_table(table, year=YEAR, faculty=FACULTY)
