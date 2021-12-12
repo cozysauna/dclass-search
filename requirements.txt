@@ -9,4 +9,3 @@ django-allauth
 requests
 beautifulsoup4
 bs4
-django-environ

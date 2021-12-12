@@ -23,19 +23,15 @@ import environ
 BASE_DIR = Path(__file__).resolve().parent.parent
 # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-env = environ.Env()
-env.read_env(os.path.join(BASE_DIR, '.env'))
-SECRET_KEY = env('SECRET_KEY')
-DEBUG = False if env('DEBUG') == 'False' else True
+DEBUG = True
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = 'django-insecure-03wmqk=oqnvmnh$)8kdf+*awi$n8x44ir7qshfg7qd&19nyb7g'
+SECRET_KEY = 'django-insecure-03wmqk=oqnvmnh$)8kdf+*awi$n8x44ir7qshfg7qd&19nyb7g'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = False
 ALLOWED_HOSTS = ['*']
 
 # Application definition
