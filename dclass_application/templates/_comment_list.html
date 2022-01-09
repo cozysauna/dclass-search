@@ -1,9 +1,9 @@
 <div class="comment_result">
     <a href="{% url 'class' comment.cl.id %}">
         <div class="comment_result_content">
-            <h2>
-            {{comment.cl.class_name | truncatechars:10}}
-            </h2>
+            <h3>
+            {{comment.cl.class_name | truncatechars:12}}
+            </h3>
             <span class="star">{{comment.get_star}}</span><span class="my-gray">{{comment.get_left_star}}</span>
             <p>{{comment.text | truncatechars:40}}</p>
         </div>

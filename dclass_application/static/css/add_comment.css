@@ -43,3 +43,14 @@
     color: white;
     margin-top: 20px;
 }
+
+.margin_center {
+    margin: 0 auto;
+    width: 50%;
+}
+
+@media screen and (max-width: 767px) {
+    .margin_center {
+        width: 95%;
+    }
+}

@@ -13,20 +13,20 @@ from time import sleep
 
 # PlaneData
 
-open_f = open('syllabus_plane_data/Social/2021.txt')
-write_f = open('final_data/Social.txt', 'a')
+open_f = open('syllabus_plane_data/Culture_Information/2021.txt')
+write_f = open('final_data/Culture_Information.txt', 'a')
 # FACULTY = 'グローバル地域文化学部'
 # FACULTY = 'グローバル・コミュニケーション学部'
 # FACULTY = '心理学部'
 # FACULTY = 'スポーツ健康科学部'
 # FACULTY = '生命医科学部'
 # FACULTY = '理工学部'
-# FACULTY = '文化情報学部'
+FACULTY = '文化情報学部'
 # FACULTY = '政策学部'
 # FACULTY = '商学部'
 # FACULTY = '経済学部'
 # FACULTY = '法学部'
-FACULTY = '社会学部'
+# FACULTY = '社会学部'
 # FACULTY = '文学部'
 # FACULTY = '神学部'
 # FACULTY = '一般教養'
@@ -230,18 +230,17 @@ driver = webdriver.Chrome(options=options)
 
 DATA_NUM = 10
 log = DATA_NUM
-END = 100
-for table in tables[DATA_NUM:END]:
+# END = 105
+for table in tables[DATA_NUM:]:
     log += 1
     table = table.select("td")
     class_data = mold_table(table, year=YEAR, faculty=FACULTY)
     code = class_data['code']
     print(log)
 
-
     for i in range(2, -1, -1):
         driver.get(URL)
-        sleep(1)
+        sleep(0.3)
 
         #年度
         dropdown = driver.find_element(by=By.ID, value='form1:kaikoNendolist')

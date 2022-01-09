@@ -16,6 +16,10 @@ li {
     list-style: none;
 }
 
+select {
+    background-color: white;
+}
+
 :root { 
     --my-gray: #DEE2E6;
     --my-light-gray: #F3F3F3;
@@ -76,10 +80,11 @@ html {
 }
 
 .wrapper {
-    margin: 40px 0px;
-    padding: 40px 50px;
+    margin: 40px 10px;
+    box-sizing: border-box;
+    padding: 40px 45px;
     background-color: white;
-    border-radius: 15px;
+    border-radius: 5px;
     margin-top: 20px;
 }
 
@@ -125,7 +130,6 @@ html {
 
 .class_title {
     width: 100%;
-    /* margin-bottom: 40px; */
 }
 
 .bold {
@@ -186,23 +190,6 @@ html {
     text-align: center;
 }
 
-.margin_center {
-    margin: 0 auto;
-    width: 50%;
-}
-
-.keyword {
-    width: 80%;
-    height: 30px;
-    border-radius: 5px;
-    padding: 5px 10px;
-}
-
-.keyword::placeholder {
-    text-align: center;
-}
-
-
 input[type='radio'] {
     display: none;
 }
@@ -227,6 +214,9 @@ input[type='radio'] {
 }
 
 @media screen and (max-width: 767px) {
+    html {
+        background-color: white;
+    }
     .wrapper {
         margin: 40px 0px;
         padding: 40px 10px;

@@ -39,7 +39,6 @@ class ResultView(ListView):
             search_params = request.session['search_params']
             search_params['sort'] = request.POST['sort']
 
-
         querys = self.get_queryset(search_params)
         querys = Paginator(querys, self.paginate_by)
 

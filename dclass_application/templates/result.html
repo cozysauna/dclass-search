@@ -7,23 +7,25 @@
 {% endblock css %}
 
 {% block main %}
-    <div class="search_conditions">
-        {% for condition in search_conditions %}
-            <li class = "condition">{{condition}}</li>
-        {% endfor %}
-    </div>
-    <div class="title">
-        <h4 class="title_left">検索結果<span class="strong_result">{{query_cnt}}</span>件</h4>
-        <div class="title_right">
-            <form action="{% url 'result' %}" method = "post">
-                {% csrf_token %}
-                {{sort_form}}
-                <input type="submit" value="並び替え", class="hide sort_btn">
-            </form>
-        </div>
-    </div>
-
     <div class="wrapper">
+        <h4>検索条件</h4>
+        <div class="search_conditions">
+            {% for condition in search_conditions %}
+                <li class = "condition">{{condition}}</li>
+            {% empty %}
+                <li class = "condition">なし</li>
+            {% endfor %}
+        </div>
+        <div class="title">
+            <h4 class="title_left">検索結果<span class="strong_result">{{query_cnt}}</span>件</h4>
+            <div class="title_right">
+                <form action="{% url 'result' %}" method = "post">
+                    {% csrf_token %}
+                    {{sort_form}}
+                    <input type="submit" value="並び替え" class="hide sort_btn">
+                </form>
+            </div>
+        </div>
         <div class="class_w">
             {% for cl in querys %}
                 {% include "_class_list.html" %}
@@ -32,24 +34,47 @@
             {% endfor %}
         </div>
         <div class="pagination_w">
-            <p>{{querys.number}} / {{querys.paginator.num_pages}}</p>
             <ul class="pagination">
                 <div class="pagination_top">
                     <li>
-                        {% if querys.has_previous %}
+                        {% if querys.number > 2 %}
                             <div class="pagination_item">
-                                <a href="?page={{ querys.previous_page_number }}">
-                                    <i class="fas fa-angle-left fa-fw"></i>前のページ
+                                <a href="?page=1">
+                                    1
                                 </a>
                             </div>
                         {% endif %}
-
+                    </li>
+                    <li>
+                        {% if querys.has_previous%}
+                            <div class="pagination_item">
+                                <a href="?page={{ querys.previous_page_number }}">
+                                    {{ querys.previous_page_number}}
+                                </a>
+                            </div>
+                        {% endif %}
+                    </li>
+                    <li>
+                        <div class="pagination_item pagination_item_now">
+                            <a href="?page={{ querys.number }}">
+                                {{ querys.number}}
+                            </a>
+                        </div>
                     </li>
                     <li>
                         {% if querys.has_next %}
                             <div class="pagination_item">
                                 <a href="?page={{ querys.next_page_number }}">
-                                    次のページ<i class="fas fa-angle-right fa-fw"></i>
+                                    {{ querys.next_page_number}}
+                                </a>
+                            </div>
+                        {% endif %}
+                    </li>
+                    <li>
+                        {% if querys.has_next  and querys.next_page_number < querys.paginator.num_pages%}
+                            <div class="pagination_item">
+                                <a href="?page={{querys.paginator.num_pages}}">
+                                    {{querys.paginator.num_pages}}
                                 </a>
                             </div>
                         {% endif %}
@@ -57,7 +82,7 @@
                 </div>
             </ul>
         </div>
-        {% include "_back_btn.html" %}
+        {% comment %} {% include "_back_btn.html" %} {% endcomment %}
     </div>
 
 {% endblock main %}

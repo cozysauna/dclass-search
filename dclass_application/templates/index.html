@@ -9,20 +9,53 @@
 {% block main %}
     <div class="wrapper">
         <h1 class="title heading">同志社大学授業検索サーチ<i class="fas fa-check-circle fa-fw my-green"></i></h1>
-        <p class="server">サーバーを移行しました <a href="http://dclass-search.com">ここをクリック！</a></p>
-        <ul class="feature">
-            <li>
-                <h3>簡単授業検索</h3>
-                <p>過去3年間のA率・評定平均・基礎情報を簡単にチェック！</p>
-            </li>
-            <li>
-                <h3>Duet連携</h3>
-                <p>履修中の授業の評価・コメントを確認！</p>
-            </li>
-            <li>
-                <h3>お気に入り機能</h3>
-                <p>授業のお気に入り登録が可能！</p>
-            </li>
+        {% comment %} <p class="server">サーバーを移行しました <a href="http://dclass-search.com">ここをクリック！</a></p> {% endcomment %}
+        <ul class="features">
+            <div class="feature">
+                <div class="feature_left">
+                    <i class="fas fa-search"></i>
+                </div>
+                <div class="feature_right">
+                    <h2>Search</h2>
+                    <p>
+                        <span class="feature_bold">簡単授業検索</span>
+                        <br>
+                        <span>
+                            過去3年間のA率・評定平均・基礎情報を簡単にチェック
+                        </span>
+                    </p>
+                </div>
+            </div>
+            <div class="feature">
+                <div class="feature_left">
+                    <i class="fas fa-link"></i>
+                </div>
+                <div class="feature_right">
+                    <h2>Duet</h2>
+                    <p>
+                        <span class="feature_bold">Duet連携</span>
+                        <br>
+                        <span>
+                            履修中の授業の評価・コメントを確認
+                        <span>
+                    </p>
+                </div>
+            </div>
+            <div class="feature">
+                <div class="feature_left">
+                    <i class="fas fa-heart my-pink"></i>
+                </div>
+                <div class="feature_right">
+                    <h2>Favorite</h2>
+                    <p>
+                        <span class="feature_bold">お気に入り機能</span>
+                        <br>
+                        <span>
+                            授業のお気に入り登録が可能
+                        </span>
+                    </p>
+                </div>
+            </div>
         </ul>
     </div>
     <div class="wrapper">
@@ -30,7 +63,7 @@
             <form action="{% url 'result' %}" method = "post" class="search_form">
                 {% csrf_token %}
                 <div class = 'search_with_terms'>
-                    <p class="how_to_search"><i class="fas fa-search fa-fw"></i>条件から探す</p>
+                    <p class="how_to_search">条件から探す</p>
                     <div class="radio_wrap">
                         <div class="radio_wrap_name">学期</div>
                         {% for radio in form.term %}
@@ -54,22 +87,22 @@
                     </div>
                     <div class="radio_wrap">
                         <div class="radio_wrap_half">
-                            {{ form.faculty.label }}
+                            <div class="radio_wrap_half_name">{{ form.faculty.label }}</div>
                             {{ form.faculty }}
                         </div>
                         <div class="radio_wrap_half">
-                            {{ form.day.label }}
+                            <div class="radio_wrap_half_name">{{ form.day.label }}</div>
                             {{ form.day }}
                         </div>
                     </div>
                 </div>
                 <div class="search_with_keyword">
-                    <p class="how_to_search"><i class="fas fa-chalkboard-teacher fa-fw"></i>授業名・教師で探す</p>
+                    <p class="how_to_search">授業名・教師から探す</p>
                     <div>
                         {{ form.keyword }}
                     </div>
                     <div class="center">
-                        <input type="submit" value="検索", class="btn search_btn">
+                        <input type="submit" value="検索" class="btn search_btn">
                     </div>
                 </div>
             </form>

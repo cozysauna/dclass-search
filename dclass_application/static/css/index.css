@@ -3,10 +3,23 @@
     text-align: center;
 }
 
+.keyword {
+    width: 90%;
+    height: 30px;
+    border-radius: 5px;
+    padding: 5px 10px;
+    border: 1px solid var(--my-gray);
+}
+
+.keyword::placeholder {
+    text-align: center;
+}
+
 .how_to_search {
     text-align: center;
     font-size: 16px;
     padding: 15px 0px;
+    font-weight: bold;
 }
 
 .search_with_terms input[type='radio']:checked+label {
@@ -43,13 +56,14 @@
     line-height: 10px;
     font-size: 18px;
     padding: 10px 20px;
+    box-shadow: 0 3px 6px -2px #000a3c33;
 }
 
 .radio_wrap {
     width: 100%;
     display: flex;
     flex-direction: row;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     text-align: center;
     margin-bottom: 20px;
 }
@@ -59,12 +73,12 @@
     display: inline-block;
     border: 1px solid var(--my-gray);
     height: 50px;
-    width: 100%;
+    width: calc(90% / 3);
     line-height: 50px;
 }
 
 .radio_wrap_name {
-    width: 20%;
+    width: 10%;
     text-align: center;
     height: 50px;
     line-height: 50px;
@@ -72,6 +86,20 @@
 
 .radio_wrap_half {
     width: 50%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.radio_wrap_half select {
+    /* border-color: blue; */
+    border: 1px solid var(--my-gray);
+    box-sizing: border-box;
+}
+
+.radio_wrap_half_name {
+    width: 20%;
+    height: 50px;
+    line-height: 50px;
 }
 
 .radio_wrap_half select {
@@ -81,31 +109,43 @@
     cursor: pointer;
 }
 
-.feature {
+.features {
     width: 100%;
     display: flex;
     flex-wrap: wrap;
     margin: 30px 0 0;
 }
 
-.feature li{
+.feature {
     width: calc(calc(100% - 30px)/3);
-    border: 1px solid var(--my-gray);
+    /* width: calc(100% / 3); */
     box-sizing: border-box;
-    border-radius: 5px;
     margin: 5px;
     padding: 10px 20px;
+    display: flex;
 }
 
-.feature li h3 {
+.feature_left {
+    width: 20%;
     text-align: center;
-    margin: 5px 0;
+}
+
+.feature_left .fas {
+    font-size: 24px;
+    padding-top: 5px;
+}
+
+.feature_right {
+    width: 80%;
+}
+
+.feature_bold {
+    font-weight: bold;
 }
 
 .server {
     margin-top: 10px;
     font-size: 20px;
-    /* font-weight: bold; */
     border: 3px solid red;
     box-sizing: border-box;
     text-align: center;
@@ -117,7 +157,30 @@
 }
 
 @media screen and (max-width: 767px) {
-    .feature li{
+    .feature {
+        width: 100%;
+        padding: 10px 0;
+
+    }
+
+    .radio_wrap {
+        margin-bottom: 0;
+    }
+    .radio_wrap label{
+        width: calc(100% / 3);
+    }
+    
+    .radio_wrap_name {
         width: 100%;
     }
+
+    .radio_wrap_half_name {
+        width: 100%;
+    }
+
+    .radio_wrap_half select {
+        width: 100%;
+        margin: 0 3px;
+    }
+
 }

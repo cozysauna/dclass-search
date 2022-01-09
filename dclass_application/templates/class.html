@@ -132,12 +132,6 @@
                         {% for ratio in cl.get_a_ratios %}
                             <td>{{ratio}}</td>
                         {% endfor %}
-                        {% comment %} <td>{{cl.a_ratio}}</td>
-                        <td>{{cl.b_ratio}}</td>
-                        <td>{{cl.c_ratio}}</td>
-                        <td>{{cl.d_ratio}}</td>
-                        <td>{{cl.f_ratio}}</td>
-                        <td>{{cl.o_ratio}}</td> {% endcomment %}
                     </tr>
                 </table>
             </div>
@@ -148,7 +142,6 @@
         <h3><i class="fas fa-square fa-fw my-blue"></i>コメント</h3>
         <div class="comment_w">
             {% for comment in comments %}
-                {% comment %} {% include "_comment_list.html" %} {% endcomment %}
                 <div class="comment_result">
                     <div class="comment_result_content">
                         <span class="star">{{comment.get_star}}</span><span class="my-gray">{{comment.get_left_star}}</span>
@@ -183,7 +176,7 @@
     <div class="class_back_btn">
         <form action="{{request.META.HTTP_REFERER}}" method = "get"> 
             {% csrf_token %}
-            <input type="submit" value="もどる">
+            <input type="submit" value="戻る">
         </form>
     </div>
 
@@ -197,8 +190,6 @@
 
     </div>
 </div>
-
-
 
 {% endblock main %}
 
