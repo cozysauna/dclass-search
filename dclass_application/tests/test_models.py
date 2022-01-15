@@ -1,5 +1,7 @@
+from time import clock_gettime_ns
 from django.test import TestCase
-from dclass_application.models import Classes
+from dclass_application.models import Classes, Comment
+from accounts.models import CustomUser
 
 class ClassesModelTests(TestCase):    
 
@@ -63,3 +65,64 @@ class ClassesModelTests(TestCase):
         self.assertEqual(saved_post.faculty, faculty)
         self.assertEqual(saved_post.teacher, teacher)
         self.assertEqual(saved_post.syllabus_link, syllabus_link)
+
+class CommentModelTests(TestCase):
+
+    def test_is_empty(self):
+        saved_comment = Comment.objects.all()
+        self.assertEqual(saved_comment.count(), 0)
+
+    def test_is_count_one(self):
+        comment_count = Comment.objects.all().count()
+        cls = Classes(
+            class_name='test_class_name',
+            term = 'test_term',
+            place = 'test_place',
+            class_form = 'test_class_form',
+            day = 'test_day',
+            time = 'test_time',
+            textbook = 'test_textbook',
+            code = 'test_code',
+            faculty = 'test_faculty',
+            teacher = 'test_teacher',
+            syllabus_link = 'test_syllabus_link',
+        ) 
+        cls.save()
+        user = CustomUser(pk=1)
+        user.save()
+        comment = Comment(
+            text = 'test_text',
+            cl = cls,
+            user = user,
+        )
+        comment.save()
+        new_comment_count = Classes.objects.all().count()
+        self.assertEqual(comment_count+1, new_comment_count)
+
+    def test_save_retrieve(self):
+        cls = Classes(
+            class_name='test_class_name',
+            term = 'test_term',
+            place = 'test_place',
+            class_form = 'test_class_form',
+            day = 'test_day',
+            time = 'test_time',
+            textbook = 'test_textbook',
+            code = 'test_code',
+            faculty = 'test_faculty',
+            teacher = 'test_teacher',
+            syllabus_link = 'test_syllabus_link',
+        ) 
+        cls.save()
+        user = CustomUser(pk=1)
+        user.save()
+        comment = Comment(
+            text = 'test_text',
+            cl = cls,
+            user = user,
+        )
+        comment.save()
+        saved_comment = Comment.objects.first()
+        self.assertEqual(saved_comment.text, 'test_text')
+        self.assertEqual(saved_comment.cl, cls)
+        self.assertEqual(saved_comment.user, user)
