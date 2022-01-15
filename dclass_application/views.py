@@ -21,7 +21,7 @@ class IndexView(TemplateView):
     def get(self, request):
         params = {
             'form': ClassSeachForm,
-            'recommend_data': self.class_model.objects.all().order_by('a_ratio').reverse()[:self.RECOMMEND_CNT],
+            'recommend_data': self.class_model.objects.all().exclude(a_ratio__icontains='100').order_by('a_ratio').reverse()[:self.RECOMMEND_CNT],
             'recent_comments': self.comment_model.objects.all().order_by('created_at').reverse()[:self.RECOMMEND_CNT],
         }
         return render(request, 'index.html', params)

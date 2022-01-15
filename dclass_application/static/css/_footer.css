@@ -1,0 +1,16 @@
+footer {
+    background-color: var(--my-black);
+    color: white;
+    text-align: center;
+    padding: 15px;
+    box-sizing: border-box;
+}
+
+footer a {
+    color: white;
+}
+
+footer a:hover {
+    border-bottom: 1px solid white;
+    box-sizing: border-box;
+}

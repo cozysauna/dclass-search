@@ -8,7 +8,9 @@
     {% endblock css %}
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
     <link rel="stylesheet" href="{% static 'css/_header.css' %}">
+    <link rel="stylesheet" href="{% static 'css/_footer.css' %}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'img/wolf.png' %}">
     <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
     <title>同志社大学授業検索サーチ</title>
@@ -22,7 +24,7 @@
     {% endblock main %}
 </div>
 
-
+{% include "_footer.html" %}
 
 <script
         src="https://code.jquery.com/jquery-3.4.1.min.js"

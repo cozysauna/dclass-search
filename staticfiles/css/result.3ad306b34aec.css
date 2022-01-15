@@ -3,8 +3,6 @@
     border-radius: 3px;
     text-align: center;
     cursor: pointer;
-    border: 1px solid var(--my-gray);
-    box-sizing: border-box;
 }
 
 
@@ -40,6 +38,9 @@
     flex-wrap: wrap;
     height: 60px;
     line-height: 60px;
+    /* height: 45px;
+    line-height: 45px; */
+    /* background-color: white; */
 }
 
 .strong_result {
@@ -74,10 +75,12 @@
 }
 
 .pagination_item {
+    /* width: 80%; */
     width: 60px;
     height: 60px;
     line-height: 60px;
     border-radius: 30px;
+    /* border: 1px solid var(--my-blue); */
     box-sizing: border-box;
     margin: 0 auto;
     cursor: pointer;
@@ -113,13 +116,4 @@
     width: 20%;
     text-align: center;
     box-sizing: border-box;
-}
-
-@media screen and (max-width: 767px) {
-    .pagination_top {
-        width: 100%;
-    }
-    .pagination li {
-        width: 20%;
-    }
 }

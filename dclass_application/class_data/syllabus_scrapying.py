@@ -7,27 +7,27 @@ from selenium.webdriver.common.by import By
 import chromedriver_binary
 from time import sleep
 
-
-
-
-
 # PlaneData
 
-open_f = open('syllabus_plane_data/Culture_Information/2021.txt')
-write_f = open('final_data/Culture_Information.txt', 'a')
+###
+eng_faculty_name = 'Letters'
+###
+
+open_f = open(f'syllabus_plane_data/{eng_faculty_name}/2021_2.txt')
+write_f = open(f'final_data/{eng_faculty_name}.txt', 'a')
 # FACULTY = 'グローバル地域文化学部'
 # FACULTY = 'グローバル・コミュニケーション学部'
 # FACULTY = '心理学部'
 # FACULTY = 'スポーツ健康科学部'
 # FACULTY = '生命医科学部'
 # FACULTY = '理工学部'
-FACULTY = '文化情報学部'
+# FACULTY = '文化情報学部'
 # FACULTY = '政策学部'
 # FACULTY = '商学部'
 # FACULTY = '経済学部'
 # FACULTY = '法学部'
 # FACULTY = '社会学部'
-# FACULTY = '文学部'
+FACULTY = '文学部'
 # FACULTY = '神学部'
 # FACULTY = '一般教養'
 YEAR = '2021'
@@ -114,8 +114,6 @@ def str_to_dict(st):
             ret[column] = st[i]
     return ret
 
-
-
 def get_syllabus_link(code, year):
     if '-' not in code: code += '-000'
     faculty_number = code[1:5]
@@ -129,88 +127,96 @@ def get_syllabus_data(url):
     report_ratio = 0
     participation_ratio = 0
 
-    data = requests.get(url).text
-    soup = BeautifulSoup(data, 'html.parser')
-    head = soup.find_all('td', class_='show__content-in')[0].select("tbody")
-    grades = soup.find('table', class_='show__grades').select('td')
-    txt = []
-    for grade in grades:
-        grade = [elem for elem in grade.text.split('\n') if elem]
-        grade = [elem.replace('\xa0', '') for elem in grade][0]
-        txt.append(grade)
+    try:
+        data = requests.get(url).text
+        soup = BeautifulSoup(data, 'html.parser')
+        head = soup.find_all('td', class_='show__content-in')[0].select("tbody")
+        grades = soup.find('table', class_='show__grades').select('td')
+        txt = []
+        for grade in grades:
+            grade = [elem for elem in grade.text.split('\n') if elem]
+            grade = [elem.replace('\xa0', '') for elem in grade][0]
+            txt.append(grade)
 
-    for i, tx in enumerate(txt):
-        if '%' in tx:
-            try:
-                percent = int(tx[:-1])
-            except:
-                percent = 0
-            if i == 0: continue
-            if 'テスト' in txt[i-1] or 'Test' in txt[i-1]:
-                test_ratio += percent
-            elif 'レポート' in txt[i-1] or 'Report' in txt[i-1]:
-                report_ratio += percent
-            elif '平常点' in txt[i-1] or 'Participation' in txt[i-1]:
-                participation_ratio += percent
-            else: pass
- 
-    for elem in head:
-        txt = elem.text.split('\n')
-        for tx in txt:
-            if '秋学期' in tx:
-                term = '秋'
-            if 'ネット' in tx:
-                class_form = 'オンライン授業'
-
-
-    text_book_flag = False
-    textbook = []
-    for elem in soup.select_one('body'):
-        txt = elem.text 
-        for tx in txt.split('\n'):
-            for t in tx.split('\n'):
-                if not t: continue
-                if '＜参考文献/Reference Book＞' in t or '＜備考/Remarks＞' in t: text_book_flag = False 
-                if text_book_flag: 
-                    for e in t.split('\n'):
-                        e = e.replace('\xa0', '')
-                        if not e: continue 
-                        if '『' not in e: continue
-                        textbook.append(e)
-                if '＜テキスト/Textbook＞' in t: text_book_flag = True 
-
-    textbook = [book for book in textbook if '使用しない' not in book]
-    if textbook == []: textbook = None
-
-    return term, class_form, test_ratio, report_ratio, participation_ratio, textbook
+        for i, tx in enumerate(txt):
+            if '%' in tx:
+                try:
+                    percent = int(tx[:-1])
+                except:
+                    percent = 0
+                if i == 0: continue
+                if 'テスト' in txt[i-1] or 'Test' in txt[i-1]:
+                    test_ratio += percent
+                elif 'レポート' in txt[i-1] or 'Report' in txt[i-1]:
+                    report_ratio += percent
+                elif '平常点' in txt[i-1] or 'Participation' in txt[i-1]:
+                    participation_ratio += percent
+                else: pass
     
+        for elem in head:
+            txt = elem.text.split('\n')
+            for tx in txt:
+                if '秋学期' in tx:
+                    term = '秋'
+                if 'ネット' in tx:
+                    class_form = 'オンライン授業'
 
+
+        text_book_flag = False
+        textbook = []
+        for elem in soup.select_one('body'):
+            txt = elem.text 
+            for tx in txt.split('\n'):
+                for t in tx.split('\n'):
+                    if not t: continue
+                    if '＜参考文献/Reference Book＞' in t or '＜備考/Remarks＞' in t: text_book_flag = False 
+                    if text_book_flag: 
+                        for e in t.split('\n'):
+                            e = e.replace('\xa0', '')
+                            if not e: continue 
+                            if '『' not in e: continue
+                            textbook.append(e)
+                    if '＜テキスト/Textbook＞' in t: text_book_flag = True 
+
+        textbook = [book for book in textbook if '使用しない' not in book]
+        if textbook == []: textbook = None
+
+        return term, class_form, test_ratio, report_ratio, participation_ratio, textbook
+    except:
+        return False
+    
 def mold_table(table, year, faculty):
     table = [mold_txt(txt) for txt in table]
-    class_data = {
-        'class_name': table[2][0].translate(str.maketrans({chr(0xFF01 + i): chr(0x21 + i) for i in range(94)})),
-        # ratio a, b, c, d, f, o
-        'grade_distribution':[-1, -1, -1, -1, -1, -1],
-        'average_evaluation': -1,
-        'a_ratio_history': [-1, -1, -1],
-        'term': None, # シラバス
-        'year': year,
-        'place': table[4][0],
-        'class_form': None, # シラバス
-        'day': table[6][0][0][0],
-        'time': table[6][0][1][0],
-        'textbook': None, # シラバス
-        'code': table[0][0],
-        'faculty ': faculty,
-        'teacher': table[3],
-        'syllabus_link': get_syllabus_link(table[0][0], YEAR), # シラバス
-        'test_ratio': None, # シラバス
-        'report_ratio': None, # シラバス
-        'participation_ratio': None, # シラバス
-        # 'num_student': None, # シラバス
-        'credit': table[5][0][0]
-    }
-    term, class_form, test_ratio, report_ratio, participation_ratio, textbook = get_syllabus_data(class_data['syllabus_link'])
+    try:
+        class_data = {
+            'class_name': table[2][0].translate(str.maketrans({chr(0xFF01 + i): chr(0x21 + i) for i in range(94)})),
+            # ratio a, b, c, d, f, o
+            'grade_distribution':[-1, -1, -1, -1, -1, -1],
+            'average_evaluation': -1,
+            'a_ratio_history': [-1, -1, -1],
+            'term': None, # シラバス
+            'year': year,
+            'place': table[4][0],
+            'class_form': None, # シラバス
+            'day': table[6][0][0][0],
+            'time': table[6][0][1][0],
+            'textbook': None, # シラバス
+            'code': table[0][0],
+            'faculty ': faculty,
+            'teacher': table[3],
+            'syllabus_link': get_syllabus_link(table[0][0], YEAR), # シラバス
+            'test_ratio': None, # シラバス
+            'report_ratio': None, # シラバス
+            'participation_ratio': None, # シラバス
+            # 'num_student': None, # シラバス
+            'credit': table[5][0][0]
+        }
+    except:
+        return False
+    try:
+        term, class_form, test_ratio, report_ratio, participation_ratio, textbook = get_syllabus_data(class_data['syllabus_link'])
+    except: 
+        return False
     class_data['term'] = term 
     class_data['class_form'] = class_form
     class_data['test_ratio'] = test_ratio
@@ -219,22 +225,22 @@ def mold_table(table, year, faculty):
     class_data['textbook'] = textbook
     return class_data
 
-
 # 成績評価(得点分布検索)
 URL = 'https://duet.doshisha.ac.jp/kokai/html/fi/fi020/FI02001G.html'
-
-
 options = webdriver.ChromeOptions()
 driver = webdriver.Chrome(options=options)
 
-
-DATA_NUM = 10
+#########################################
+DATA_NUM = 0
 log = DATA_NUM
-# END = 105
+# END = 200
 for table in tables[DATA_NUM:]:
     log += 1
     table = table.select("td")
     class_data = mold_table(table, year=YEAR, faculty=FACULTY)
+    if not class_data:
+        print(f'Disable_Data{log}')
+        continue
     code = class_data['code']
     print(log)
 

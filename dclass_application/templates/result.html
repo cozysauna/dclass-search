@@ -71,7 +71,7 @@
                         {% endif %}
                     </li>
                     <li>
-                        {% if querys.has_next  and querys.next_page_number < querys.paginator.num_pages%}
+                        {% if querys.has_next and querys.next_page_number < querys.paginator.num_pages%}
                             <div class="pagination_item">
                                 <a href="?page={{querys.paginator.num_pages}}">
                                     {{querys.paginator.num_pages}}
@@ -82,7 +82,6 @@
                 </div>
             </ul>
         </div>
-        {% comment %} {% include "_back_btn.html" %} {% endcomment %}
     </div>
 
 {% endblock main %}
