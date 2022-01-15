@@ -13,8 +13,6 @@ class LoginTest(LiveServerTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        # options = webdriver.ChromeOptions()
-        # driver = webdriver.Chrome(options=options)
         cls.selenium = WebDriver()
 
     @classmethod
